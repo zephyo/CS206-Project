@@ -25,6 +25,7 @@ function QuizEnd(props:Props) {
   //       setLoading(false);
   //     });
   //   }, []);
+  
 if (isLoading || endResults == null){
   return  <div>Loading...</div>;
 }
