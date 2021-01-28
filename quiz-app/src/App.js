@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import QuizEnd from "./QuizEnd";
 
 export default function App() {
   const questions = [
@@ -63,9 +64,7 @@ export default function App() {
     <div className="app">
       <h1>Quiz: {quizTitle}</h1>
       {showScore ? (
-        <div className="score-section">
-          You scored {score} out of {questions.length}
-        </div>
+        <QuizEnd length={questions.length} score={score}></QuizEnd>
       ) : (
         <>
           <div className="question-section">
