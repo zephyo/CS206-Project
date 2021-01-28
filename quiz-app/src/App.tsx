@@ -1,43 +1,53 @@
 import React, { useState } from "react";
-import Quiz, {Question} from "./Quiz";
+import Quiz from "./Quiz";
 import QuizEnd from "./QuizEnd";
+import QuizImage from "./QuizImage";
+import './scss/index.scss';
+
+export interface Question {
+  questionText: string;
+  answerOptions:  Array<Answer>;
+  imageSrc: string;
+}
+
+interface Answer {
+  answerText: string;
+  isCorrect: boolean;
+}
+
 
 const questions : Array<Question> = [
   {
-    questionText: "What is the capital of France?",
+    questionText: "Democrat or Republican?",
     answerOptions: [
-      { answerText: "New York", isCorrect: false },
-      { answerText: "London", isCorrect: false },
-      { answerText: "Paris", isCorrect: true },
-      { answerText: "Dublin", isCorrect: false },
+      { answerText: "Democrat", isCorrect: false },
+      { answerText: "Republican", isCorrect: true },
     ],
+    imageSrc: "https://i.pinimg.com/474x/9e/cd/29/9ecd29672631c9f2357d7204299fe774.jpg",
   },
   {
-    questionText: "Who is CEO of Tesla?",
+    questionText: "Democrat or Republican?",
     answerOptions: [
-      { answerText: "Jeff Bezos", isCorrect: false },
-      { answerText: "Elon Musk", isCorrect: true },
-      { answerText: "Bill Gates", isCorrect: false },
-      { answerText: "Tony Stark", isCorrect: false },
+      { answerText: "Democrat", isCorrect: false },
+      { answerText: "Republican", isCorrect: true },
     ],
+    imageSrc: "https://i.pinimg.com/474x/39/2f/cf/392fcf715cad56cd4bf260cc6cd06de2.jpg",
   },
   {
-    questionText: "The iPhone was created by which company?",
+    questionText: "Democrat or Republican?",
     answerOptions: [
-      { answerText: "Apple", isCorrect: true },
-      { answerText: "Intel", isCorrect: false },
-      { answerText: "Amazon", isCorrect: false },
-      { answerText: "Microsoft", isCorrect: false },
+      { answerText: "Democrat", isCorrect: true },
+      { answerText: "Republican", isCorrect: false },
     ],
+    imageSrc: "https://i.pinimg.com/474x/9e/cd/29/9ecd29672631c9f2357d7204299fe774.jpg",
   },
   {
-    questionText: "How many Harry Potter books are there?",
+    questionText: "Democrat or Republican?",
     answerOptions: [
-      { answerText: "1", isCorrect: false },
-      { answerText: "4", isCorrect: false },
-      { answerText: "6", isCorrect: false },
-      { answerText: "7", isCorrect: true },
+      { answerText: "Democrat", isCorrect: false },
+      { answerText: "Republican", isCorrect: true },
     ],
+    imageSrc: "https://i.pinimg.com/474x/d3/11/61/d31161c1dd90394ca66ed3c0b78092e7.jpg",
   },
 ];
 
@@ -48,8 +58,13 @@ export default function App() {
   );
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
+    //   should we ask the user for data (e.g. top clue) about the question's image?
+    const [askForData, setAskForData] = useState(false);
 
   const handleAnswerOptionClick = (isCorrect: boolean) => {
+    // TODO: have journalists customize whether to ask for data on a particular question or not
+    setAskForData(true);
+
     if (isCorrect) {
       setScore(score + 1);
     }
@@ -61,21 +76,28 @@ export default function App() {
       setShowScore(true);
     }
   };
+
+  if (askForData){
+    return  <QuizImage src={questions[currQuestionIndex-1].imageSrc}
+    setAskForData={setAskForData}
+    interactable={true}/>;
+  }
+
+  if (showScore){
+    return <QuizEnd
+    length={questions.length}
+    score={score}
+    newspaper="New York Times"
+    ></QuizEnd>;
+  }
+
   return (
     <div className="app">
       <h1>Quiz: {quizTitle}</h1>
-      {showScore ? (
-        <QuizEnd
-          length={questions.length}
-          score={score}
-          newspaper="New York Times"
-        ></QuizEnd>
-      ) : (
         <Quiz length={questions.length} 
         currQuestionIndex={currQuestionIndex}
         currentQuestion={questions[currQuestionIndex]} 
         handleAnswerOptionClick={handleAnswerOptionClick}></Quiz>
-      )}
     </div>
   );
 }

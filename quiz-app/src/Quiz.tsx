@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import  {Question} from "./App";
 import QuizImage from "./QuizImage";
 
 interface Props {
@@ -8,16 +9,6 @@ interface Props {
     handleAnswerOptionClick: (isCorrect: boolean) => void;
 }
 
-export interface Question {
-    questionText: string;
-    answerOptions:  Array<Answer>;
-}
-
-interface Answer {
-    answerText: string;
-    isCorrect: boolean;
-}
-  
 
   function Quiz(props: Props) {
     return <><div className="question-section">
@@ -29,7 +20,7 @@ interface Answer {
               {props.currentQuestion.questionText}
             </div>
           </div>
-       <QuizImage></QuizImage>
+          <QuizImage src={props.currentQuestion.imageSrc}/>
           <div className="answer-section">
             {props.currentQuestion.answerOptions.map(
               (answerOption) => (

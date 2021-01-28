@@ -25,7 +25,7 @@ function QuizEnd(props:Props) {
   //       setLoading(false);
   //     });
   //   }, []);
-  
+
 if (isLoading || endResults == null){
   return  <div>Loading...</div>;
 }
@@ -38,6 +38,9 @@ if (isLoading || endResults == null){
       <br />
       correct {endResults.totalCorrect / endResults.totalGuesses}{" "}
       percent of the time.
+      <br></br>
+      Here's what most gave it away:
+      //TODO
     </div>
   ;
 }
