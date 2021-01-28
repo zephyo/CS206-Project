@@ -1,47 +1,48 @@
 import React, { useState } from "react";
+import Quiz, {Question} from "./Quiz";
 import QuizEnd from "./QuizEnd";
 
-export default function App() {
-  const questions = [
-    {
-      questionText: "What is the capital of France?",
-      answerOptions: [
-        { answerText: "New York", isCorrect: false },
-        { answerText: "London", isCorrect: false },
-        { answerText: "Paris", isCorrect: true },
-        { answerText: "Dublin", isCorrect: false },
-      ],
-    },
-    {
-      questionText: "Who is CEO of Tesla?",
-      answerOptions: [
-        { answerText: "Jeff Bezos", isCorrect: false },
-        { answerText: "Elon Musk", isCorrect: true },
-        { answerText: "Bill Gates", isCorrect: false },
-        { answerText: "Tony Stark", isCorrect: false },
-      ],
-    },
-    {
-      questionText: "The iPhone was created by which company?",
-      answerOptions: [
-        { answerText: "Apple", isCorrect: true },
-        { answerText: "Intel", isCorrect: false },
-        { answerText: "Amazon", isCorrect: false },
-        { answerText: "Microsoft", isCorrect: false },
-      ],
-    },
-    {
-      questionText: "How many Harry Potter books are there?",
-      answerOptions: [
-        { answerText: "1", isCorrect: false },
-        { answerText: "4", isCorrect: false },
-        { answerText: "6", isCorrect: false },
-        { answerText: "7", isCorrect: true },
-      ],
-    },
-  ];
+const questions : Array<Question> = [
+  {
+    questionText: "What is the capital of France?",
+    answerOptions: [
+      { answerText: "New York", isCorrect: false },
+      { answerText: "London", isCorrect: false },
+      { answerText: "Paris", isCorrect: true },
+      { answerText: "Dublin", isCorrect: false },
+    ],
+  },
+  {
+    questionText: "Who is CEO of Tesla?",
+    answerOptions: [
+      { answerText: "Jeff Bezos", isCorrect: false },
+      { answerText: "Elon Musk", isCorrect: true },
+      { answerText: "Bill Gates", isCorrect: false },
+      { answerText: "Tony Stark", isCorrect: false },
+    ],
+  },
+  {
+    questionText: "The iPhone was created by which company?",
+    answerOptions: [
+      { answerText: "Apple", isCorrect: true },
+      { answerText: "Intel", isCorrect: false },
+      { answerText: "Amazon", isCorrect: false },
+      { answerText: "Microsoft", isCorrect: false },
+    ],
+  },
+  {
+    questionText: "How many Harry Potter books are there?",
+    answerOptions: [
+      { answerText: "1", isCorrect: false },
+      { answerText: "4", isCorrect: false },
+      { answerText: "6", isCorrect: false },
+      { answerText: "7", isCorrect: true },
+    ],
+  },
+];
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+export default function App() {
+  const [currQuestionIndex, setCurrQuestionIndex] = useState(0);
   const [quizTitle, setQuizTitle] = useState(
     "Quiz: Can You Tell a Democrat's House from a Republican's House?"
   );
@@ -53,9 +54,9 @@ export default function App() {
       setScore(score + 1);
     }
 
-    const nextQuestion = currentQuestion + 1;
+    const nextQuestion = currQuestionIndex + 1;
     if (nextQuestion < questions.length) {
-      setCurrentQuestion(nextQuestion);
+      setCurrQuestionIndex(nextQuestion);
     } else {
       setShowScore(true);
     }
@@ -70,30 +71,10 @@ export default function App() {
           newspaper="New York Times"
         ></QuizEnd>
       ) : (
-        <>
-          <div className="question-section">
-            <div className="question-count">
-              <span>Question {currentQuestion + 1}</span>/
-              {questions.length}
-            </div>
-            <div className="question-text">
-              {questions[currentQuestion].questionText}
-            </div>
-          </div>
-          <div className="answer-section">
-            {questions[currentQuestion].answerOptions.map(
-              (answerOption) => (
-                <button
-                  onClick={() =>
-                    handleAnswerOptionClick(answerOption.isCorrect)
-                  }
-                >
-                  {answerOption.answerText}
-                </button>
-              )
-            )}
-          </div>
-        </>
+        <Quiz length={questions.length} 
+        currQuestionIndex={currQuestionIndex}
+        currentQuestion={questions[currQuestionIndex]} 
+        handleAnswerOptionClick={handleAnswerOptionClick}></Quiz>
       )}
     </div>
   );
