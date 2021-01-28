@@ -48,7 +48,7 @@ export default function App() {
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
 
-  const handleAnswerOptionClick = (isCorrect) => {
+  const handleAnswerOptionClick = (isCorrect: boolean) => {
     if (isCorrect) {
       setScore(score + 1);
     }
@@ -64,7 +64,11 @@ export default function App() {
     <div className="app">
       <h1>Quiz: {quizTitle}</h1>
       {showScore ? (
-        <QuizEnd length={questions.length} score={score}></QuizEnd>
+        <QuizEnd
+          length={questions.length}
+          score={score}
+          newspaper="New York Times"
+        ></QuizEnd>
       ) : (
         <>
           <div className="question-section">
