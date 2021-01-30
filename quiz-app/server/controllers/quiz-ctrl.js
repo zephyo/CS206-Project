@@ -156,7 +156,7 @@ sendAnswer = (req, res) => {
         })
     }
 
-    Response.findOne({ _id: req.session.response_id }, (err, response) => {
+    Response.findOne({ _id: req.session.response_id || '6015ed34940f7d5af7310fc8' }, (err, response) => {
         if (err || !response) {
             return res.status(404).json({
                 err,
