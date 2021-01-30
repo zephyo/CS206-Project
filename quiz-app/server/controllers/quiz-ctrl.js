@@ -33,6 +33,41 @@ getQuizSchema = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+newQuizSchema = async (req, res) => {
+
+    const body = req.body
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a quiz',
+        })
+    }
+
+    const quiz = new Quiz(body)
+
+    if (!quiz) {
+        return res.status(400).json({ success: false, error: err })
+    }
+
+    quiz
+        .save()
+        .then(() => {
+            return res.status(201).json({
+                success: true,
+                id: quiz._id,
+                message: 'Quiz created!',
+            })
+        })
+        .catch(error => {
+            return res.status(400).json({
+                error,
+                message: 'Quiz not created!',
+            })
+        })
+}
+
+
 /*
 {
     "question_text": string,
@@ -286,5 +321,6 @@ module.exports = {
     getQuestionById,
     getPhotoById,
     sendAnswer,
-    getResults
+    getResults,
+    newQuizSchema
 }
