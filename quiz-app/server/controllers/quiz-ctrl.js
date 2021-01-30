@@ -1,4 +1,5 @@
-const Movie = require('../models/quiz-model')
+const Quiz = require('../models/Quiz')
+const Response = require('../models/Response')
 
 /*
 {
