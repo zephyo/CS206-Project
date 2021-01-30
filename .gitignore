@@ -10,7 +10,6 @@ node_modules/
 
 # production
 /build
-quiz-app/client/public
 
 # misc
 .DS_Store
