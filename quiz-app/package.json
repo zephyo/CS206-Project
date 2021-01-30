@@ -1,12 +1,13 @@
 {
   "scripts": {
-      "server": "nodemon server/index.js",
-      "client": "yarn --cwd client/ start",
-      "database": "brew services start mongodb-community",
-      "dev": "concurrently \"yarn run database\" \"yarn run server\" \"yarn run client\"",
-      "stopdb": "brew services stop mongodb-community"
+    "server": "nodemon server/index.js",
+    "client": "yarn --cwd client/ start",
+    "database": "brew services start mongodb-community",
+    "dev": "concurrently \"yarn run database\" \"yarn run server\" \"yarn run client\"",
+    "stopdb": "brew services stop mongodb-community"
   },
   "dependencies": {
-    "concurrently": "^5.3.0"
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.7"
   }
 }

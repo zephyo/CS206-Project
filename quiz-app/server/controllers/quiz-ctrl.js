@@ -77,6 +77,11 @@ getQuizSchema = async (req, res) => {
 }
 */
 getQuestionById = async (req, res) => {
+    return res.status(200).json({ success: true, data: {
+        "question_text": "Whose House is this?",
+        "question_photo_id": "3"
+    } })
+
     await Movie.findOne({ _id: req.params.id }, (err, movie) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -97,6 +102,10 @@ getQuestionById = async (req, res) => {
 }
 */
 getPhotoById = async (req, res) => {
+    return res.status(200).json({ success: true, data: {
+        "url": req.headers.host+"house3"
+    } })
+
     await Movie.findOne({ _id: req.params.id }, (err, movie) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -123,6 +132,12 @@ payload:
 }
 */
 sendAnswer = (req, res) => {
+    return res.status(201).json({
+        success: true,
+        // id: movie._id,
+        message: 'Movie created!',
+    })
+
     const body = req.body
 
     if (!body) {
@@ -162,6 +177,10 @@ sendAnswer = (req, res) => {
 }
 */
 getResults = async (req, res) => {
+    return res.status(200).json({ success: true, data: {
+        "correct": 2,
+        "wrong": 0
+    } })
     await Movie.find({}, (err, movies) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
