@@ -107,21 +107,9 @@ getQuestionById = async (req, res) => {
 */
 getPhotoById = async (req, res) => {
     return res.status(200).json({ success: true, data: {
-        "url": req.headers.host+"house3"
+        "url": req.protocol+"://"+req.host+":8000/photos/politicianshouses/"+req.params.id,
+        "test": req.headers
     } })
-
-    await Movie.findOne({ _id: req.params.id }, (err, movie) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-
-        if (!movie) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Movie not found` })
-        }
-        return res.status(200).json({ success: true, data: movie })
-    }).catch(err => console.log(err))
 }
 
 /*
