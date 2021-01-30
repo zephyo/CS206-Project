@@ -10,11 +10,6 @@ const Response = require('../models/Response')
 }
 */
 getQuizSchema = async (req, res) => {
-    // return res.status(200).json({ success: true, data: {
-    //     "number_of_questions": 2,
-    //     "quiz_name": "houses",
-    //     "quiz_instructions": "foooobarrr"
-    // } })
 
     await Quiz.find({}, (err, quizzes) => {
         if (err) {
@@ -25,6 +20,7 @@ getQuizSchema = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `No Quizzes` })
         }
+        req.session.quiz_id = 0
         return res.status(200).json({ success: true, data: {
             "questions": _.map(quizzes[0].questions, (v) => v.id),
             "quiz_name": quizzes[0].name,
@@ -71,26 +67,36 @@ newQuizSchema = async (req, res) => {
 /*
 {
     "question_text": string,
-    "question_photo_id": integer
+    "question_photo_id": integer,
+    "answers" : [{answerId: Number, answerText: String, correct: Boolean}]
 }
 */
 getQuestionById = async (req, res) => {
-    return res.status(200).json({ success: true, data: {
-        "question_text": "Whose House is this?",
-        "question_photo_id": "3"
-    } })
 
-    await Movie.findOne({ _id: req.params.id }, (err, movie) => {
+    await Quiz.findOne({ id: req.session.quiz_id || 0 }, (err, quiz) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
 
-        if (!movie) {
+        if (!quiz) {
             return res
                 .status(404)
-                .json({ success: false, error: `Movie not found` })
+                .json({ success: false, error: `Quiz not found` })
         }
-        return res.status(200).json({ success: true, data: movie })
+
+        question = _.find(quiz.questions, (q) => q.id == req.params.id)
+
+        if (!question) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Question not found` })
+        }
+
+        return res.status(200).json({ success: true, data: {
+            "question_text": question.text,
+            "question_photo_id": question.photoId,
+            "answers" : question.answers
+        } })
     }).catch(err => console.log(err))
 }
 

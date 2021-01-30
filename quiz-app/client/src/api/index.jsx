@@ -17,7 +17,8 @@ export const getQuestionById = id => api.get(`/question/${id}`)
 /*
 {
     "question_text": string,
-    "question_photo_id": integer
+    "question_photo_id": integer,
+    "answers" : [{answerId: Number, answerText: String, correct: Boolean}]
 }
 */
 export const getPhotoById = id => api.get(`/photo/${id}`)
