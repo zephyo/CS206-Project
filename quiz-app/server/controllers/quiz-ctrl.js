@@ -195,20 +195,43 @@ sendAnswer = (req, res) => {
 }
 */
 getResults = async (req, res) => {
-    return res.status(200).json({ success: true, data: {
-        "correct": 2,
-        "wrong": 0
-    } })
-    await Movie.find({}, (err, movies) => {
+    // return res.status(200).json({ success: true, data: {
+    //     "correct": 2,
+    //     "wrong": 0
+    // } })
+    await Quiz.findOne({id: req.session.quiz_id || 0}, (err, quiz) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
-        if (!movies.length) {
+        if (!quiz) {
             return res
                 .status(404)
-                .json({ success: false, error: `Movie not found` })
+                .json({ success: false, error: `Quiz not found` })
         }
-        return res.status(200).json({ success: true, data: movies })
+        total_correct = 0; 
+        total_wrong = 0; 
+        async (req, res) => { 
+            await Response.find({}, (err, responses) => {
+                if (err) {
+                    return res.status(400).json({ success: false, error: err })
+                }
+                if (!responses.length) {
+                    return res
+                        .status(404)
+                        .json({ success: false, error: `Responses not found` })
+                }
+
+                total_correct = _.sumBy(responses[0].answers, (a) => {
+                    return a.answerId == _.find(quiz.questions, (q) => q.id == a.questionId) ? 1 : 0
+                    })
+                total_wrong = quiz.questions.length - total_correct;
+                req.session.response_id = null; 
+            }).catch(err => console.log(err))
+        }
+        return res.status(200).json({ success: true, data: {
+            "numCorrect" : total_correct,
+            "numWrong" : total_wrong
+        } })
     }).catch(err => console.log(err))
 }
 
