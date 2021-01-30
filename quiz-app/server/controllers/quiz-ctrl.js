@@ -20,7 +20,31 @@ getQuizSchema = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `No Quizzes` })
         }
+        req.session.response_id = null
+
         req.session.quiz_id = 0
+
+        const response = new Response({
+            quiz_id: req.session.quiz_id,
+            answers: []
+        })
+
+        if (!response) {
+            return res.status(400).json({ success: false, error: err })
+        }
+    
+        response
+            .save()
+            .then(() => {
+                req.session.response_id = response._id
+            })
+            .catch(error => {
+                return res.status(400).json({
+                    error,
+                    message: 'Response not created!',
+                })
+            })
+
         return res.status(200).json({ success: true, data: {
             "questions": _.map(quizzes[0].questions, (v) => v.id),
             "quiz_name": quizzes[0].name,
@@ -72,7 +96,6 @@ newQuizSchema = async (req, res) => {
 }
 */
 getQuestionById = async (req, res) => {
-
     await Quiz.findOne({ id: req.session.quiz_id || 0 }, (err, quiz) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -124,42 +147,45 @@ payload:
 }
 */
 sendAnswer = (req, res) => {
-    return res.status(201).json({
-        success: true,
-        // id: movie._id,
-        message: 'Movie created!',
-    })
-
     const body = req.body
 
     if (!body) {
         return res.status(400).json({
             success: false,
-            error: 'You must provide a movie',
+            error: 'You must provide information to update with',
         })
     }
 
-    const movie = new Movie(body)
-
-    if (!movie) {
-        return res.status(400).json({ success: false, error: err })
-    }
-
-    movie
-        .save()
-        .then(() => {
-            return res.status(201).json({
-                success: true,
-                id: movie._id,
-                message: 'Movie created!',
+    Response.findOne({ _id: req.session.response_id }, (err, response) => {
+        if (err || !response) {
+            return res.status(404).json({
+                err,
+                message: 'Response not found!',
             })
+        }
+        
+        response.answers = _.concat(response.answers, {
+            questionId: req.body.question_id,
+            answerId: req.body.answer_number,
+            coordinates: {x: req.body.area_selected.x, y: req.body.area_selected.y}
         })
-        .catch(error => {
-            return res.status(400).json({
-                error,
-                message: 'Movie not created!',
+
+        response
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    id: response._id,
+                    message: 'Response updated!',
+                })
             })
-        })
+            .catch(error => {
+                return res.status(404).json({
+                    error,
+                    message: 'Response not updated!',
+                })
+            })
+    })
 }
 
 /*
