@@ -199,7 +199,7 @@ getResults = async (req, res) => {
     //     "correct": 2,
     //     "wrong": 0
     // } })
-    await Quiz.findOne({id: req.session.quiz_id || 0}, (err, quiz) => {
+    Quiz.findOne({id: req.session.quiz_id || 0}, (err, quiz) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -210,28 +210,28 @@ getResults = async (req, res) => {
         }
         total_correct = 0; 
         total_wrong = 0; 
-        async (req, res) => { 
-            await Response.find({}, (err, responses) => {
-                if (err) {
-                    return res.status(400).json({ success: false, error: err })
-                }
-                if (!responses.length) {
-                    return res
-                        .status(404)
-                        .json({ success: false, error: `Responses not found` })
-                }
+        Response.findOne({_id: req.session.response_id || '6015ed34940f7d5af7310fc8'}, (err, response) => {
+            if (err) {
+                return res.status(400).json({ success: false, error: err })
+            }
+            if (!response) {
+                return res
+                    .status(404)
+                    .json({ success: false, error: `Response not found` })
+            }
 
-                total_correct = _.sumBy(responses[0].answers, (a) => {
-                    return a.answerId == _.find(quiz.questions, (q) => q.id == a.questionId) ? 1 : 0
-                    })
-                total_wrong = quiz.questions.length - total_correct;
-                req.session.response_id = null; 
-            }).catch(err => console.log(err))
-        }
-        return res.status(200).json({ success: true, data: {
-            "numCorrect" : total_correct,
-            "numWrong" : total_wrong
-        } })
+            total_correct = _.sumBy(response.answers, (response_answer) => {
+                quiz_question = _.find(quiz.questions, (quiz_question) => quiz_question.id == response_answer.questionId)
+                quiz_question_answer = _.find(quiz_question.answers, (quiz_question_answer) => quiz_question_answer.answerId == response_answer.answerId)
+                return quiz_question_answer.correct ? 1 : 0
+            })
+            total_wrong = quiz.questions.length - total_correct;
+            req.session.response_id = null; 
+            return res.status(200).json({ success: true, data: {
+                "numCorrect" : total_correct,
+                "numWrong" : total_wrong
+            } })
+        }).catch(err => console.log(err))
     }).catch(err => console.log(err))
 }
 
