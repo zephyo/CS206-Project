@@ -1,30 +1,35 @@
+const _ = require('lodash')
 const Quiz = require('../models/Quiz')
 const Response = require('../models/Response')
 
 /*
 {
-    "number_of_questions": integer,
+    "questions": [integer (of questionIDs)],
     "quiz_name": string,
     "quiz_instructions": string
 }
 */
 getQuizSchema = async (req, res) => {
-    return res.status(200).json({ success: true, data: {
-        "number_of_questions": 2,
-        "quiz_name": "houses",
-        "quiz_instructions": "foooobarrr"
-    } })
+    // return res.status(200).json({ success: true, data: {
+    //     "number_of_questions": 2,
+    //     "quiz_name": "houses",
+    //     "quiz_instructions": "foooobarrr"
+    // } })
 
-    await Movie.find({}, (err, movies) => {
+    await Quiz.find({}, (err, quizzes) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
-        if (!movies.length) {
+        if (!quizzes.length) {
             return res
                 .status(404)
-                .json({ success: false, error: `Movie not found` })
+                .json({ success: false, error: `No Quizzes` })
         }
-        return res.status(200).json({ success: true, data: movies })
+        return res.status(200).json({ success: true, data: {
+            "questions": _.map(quizzes[0].questions, (v) => v.id),
+            "quiz_name": quizzes[0].name,
+            "quiz_instructions": "test instructions"
+        } })
     }).catch(err => console.log(err))
 }
 
