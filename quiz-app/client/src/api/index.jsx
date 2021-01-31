@@ -6,6 +6,7 @@ const api = axios.create({
 
 //our API
 export const getQuizSchema = () => api.get(`/schema`)
+//We keep track of responses based on your session. Need to call getQuizSchema each time a new quiz is started
 /*
 {
     "number_of_questions": integer,
@@ -17,7 +18,7 @@ export const getQuestionById = id => api.get(`/question/${id}`)
 /*
 {
     "question_text": string,
-    "question_photo_id": integer,
+    "question_photo_id": string,
     "answers" : [{answerId: Number, answerText: String, correct: Boolean}]
 }
 */
@@ -42,8 +43,8 @@ payload:
 export const getEndResults = () => api.get(`/results`)
 /*
 {
-    "correct": integer,
-    "wrong": integer
+    "numCorrect": integer,
+    "numWrong": integer
 }
 */
 

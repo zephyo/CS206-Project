@@ -22,6 +22,7 @@ getQuizSchema = async (req, res) => {
         }
         req.session.response_id = null
 
+        //Hardcoded for only one quiz
         req.session.quiz_id = 0
 
         const response = new Response({
@@ -96,6 +97,7 @@ newQuizSchema = async (req, res) => {
 }
 */
 getQuestionById = async (req, res) => {
+    //Hardcoded for only one quiz
     await Quiz.findOne({ id: req.session.quiz_id || 0 }, (err, quiz) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -156,7 +158,7 @@ sendAnswer = (req, res) => {
         })
     }
 
-    Response.findOne({ _id: req.session.response_id || '6015ed34940f7d5af7310fc8' }, (err, response) => {
+    Response.findOne({ _id: req.session.response_id}, (err, response) => {
         if (err || !response) {
             return res.status(404).json({
                 err,
@@ -195,6 +197,7 @@ sendAnswer = (req, res) => {
 }
 */
 getResults = async (req, res) => {
+    //Hardcoded for only one quiz
     Quiz.findOne({id: req.session.quiz_id || 0}, (err, quiz) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -206,7 +209,7 @@ getResults = async (req, res) => {
         }
         total_correct = 0; 
         total_wrong = 0; 
-        Response.findOne({_id: req.session.response_id || '6015ed34940f7d5af7310fc8'}, (err, response) => {
+        Response.findOne({_id: req.session.response_id}, (err, response) => {
             if (err) {
                 return res.status(400).json({ success: false, error: err })
             }
