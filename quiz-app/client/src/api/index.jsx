@@ -9,7 +9,7 @@ export const getQuizSchema = () => api.get(`/schema`)
 //We keep track of responses based on your session. Need to call getQuizSchema each time a new quiz is started
 /*
 {
-    "number_of_questions": integer,
+    "questions": [integer (of questionIDs)],
     "quiz_name": string,
     "quiz_instructions": string
 }

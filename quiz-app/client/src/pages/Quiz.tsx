@@ -5,7 +5,7 @@ import QuizEnd from "./quiz/QuizEnd";
 import Loading from "../components/Loading";
 
 export interface QuestionSchema {
-  number_of_questions: number;
+  questions: Array<number>;
   quiz_name: string;
   quiz_instructions: string;
 }
@@ -44,10 +44,12 @@ export default function Quiz() {
   };
 
   const FetchQuestionData = async () => {
-    await api.getQuestionById(currQuestionIndex).then((results) => {
-      console.log(results);
-      setCurrQuestion(results.data);
-    });
+    await api
+      .getQuestionById(questionSchema?.questions[currQuestionIndex])
+      .then((results) => {
+        console.log(results);
+        setCurrQuestion(results.data);
+      });
   };
 
   // on mount, fetch data
@@ -73,7 +75,7 @@ export default function Quiz() {
     }
 
     const nextQuestion = currQuestionIndex + 1;
-    if (nextQuestion < questionSchema.number_of_questions) {
+    if (nextQuestion < questionSchema.questions.length) {
       setCurrQuestionIndex(nextQuestion);
     }
   };
@@ -95,7 +97,7 @@ export default function Quiz() {
       <div className="question-section">
         <div className="question-count">
           <span>Question {currQuestionIndex + 1}</span>/
-          {questionSchema.number_of_questions}
+          {questionSchema.questions.length}
         </div>
         <div className="question-text">
           {currQuestion.question_text}
@@ -114,7 +116,7 @@ export default function Quiz() {
         ))}
       </div>
       <QuizEnd
-        length={questionSchema.number_of_questions}
+        length={questionSchema.questions.length}
         score={score}
         newspaper="New York Times"
       ></QuizEnd>
