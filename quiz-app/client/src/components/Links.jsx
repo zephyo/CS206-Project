@@ -4,20 +4,18 @@ class Links extends Component {
     render() {
         return (
             <>
-                <Link to="/" className="navbar-brand">
-                    My first MERN Application
+                <Link to="/">
+                    Quiz App
                 </Link>
-                    <div className="links">
-                            <Link to="/quiz/1234" >
-                                Test Quiz
-                            </Link>
-                            <Link to="/quiz/create">
-                                Create Quiz
-                            </Link>
-                            <Link to="/quiz/update" >
-                                Update Quiz
-                            </Link>
-                    </div>
+                <Link to="/quiz/1234" >
+                    Test Quiz
+                </Link>
+                <Link to="/quiz/create">
+                    Create Quiz
+                </Link>
+                <Link to="/quiz/update" >
+                    Update Quiz
+                </Link>
             </>
         )
     }

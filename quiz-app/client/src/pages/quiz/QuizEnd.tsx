@@ -20,7 +20,8 @@ function QuizEnd(props: Props) {
 
   const FetchData = async () => {
     await api.getEndResults().then((results) => {
-      setEndResults(results.data);
+      console.log("end results", results);
+      setEndResults(results.data.data);
     });
   };
 

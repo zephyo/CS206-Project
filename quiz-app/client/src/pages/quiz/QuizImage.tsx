@@ -6,10 +6,11 @@ interface Props {
   // image source id
   id: string;
   interactable?: boolean;
-  setAskForData?: (askForData: boolean) => void;
+  setAskForCoords?: (askForCoords: boolean) => void;
+  sendAnswer?: (coords: Coordinates) => void;
 }
 
-interface Coordinates {
+export interface Coordinates {
   x: number;
   y: number;
 }
@@ -17,6 +18,7 @@ interface Coordinates {
 // component to render an image and capture user's mouse coordinates
 function QuizImage(props: Props) {
   const [imgSrc, setImgSrc] = useState<string | null>(null);
+  const [clicked, setClicked] = useState<boolean>(false);
   const [coordinates, setCoordinates] = useState<Coordinates>({
     x: 0,
     y: 0,
@@ -24,7 +26,8 @@ function QuizImage(props: Props) {
 
   const FetchData = async () => {
     await api.getPhotoById(props.id).then((results) => {
-      setImgSrc(results.data);
+      console.log("img", results);
+      setImgSrc(results.data.data.url);
     });
   };
 
@@ -38,6 +41,7 @@ function QuizImage(props: Props) {
   }
 
   const onMouseMove = (e: any) => {
+    if (clicked == true) return;
     setCoordinates({
       x: e.nativeEvent.offsetX,
       y: e.nativeEvent.offsetY,
@@ -45,9 +49,19 @@ function QuizImage(props: Props) {
   };
 
   const onClick = () => {
+    if (props.interactable == false) return;
     // TODO: send the coordinates somewhere
 
-    if (props.setAskForData) props.setAskForData(false);
+    // show a circle around where you clicked
+    setClicked(true);
+
+    setTimeout(() => {
+      if (props.setAskForCoords == null || props.sendAnswer == null)
+        return;
+      props.setAskForCoords(false);
+      props.sendAnswer(coordinates);
+      setClicked(false);
+    }, 500);
   };
 
   return (
@@ -59,6 +73,10 @@ function QuizImage(props: Props) {
       <p>
         x: {coordinates.x}, y: {coordinates.y}
       </p>
+      <div
+        className={"circle " + (clicked ? "show" : "hide")}
+        style={{ top: coordinates.y, left: coordinates.x }}
+      />
     </div>
   );
 }

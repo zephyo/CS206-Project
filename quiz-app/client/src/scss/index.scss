@@ -9,46 +9,104 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  background: url("https://cdn.arnellebalane.com/images/codepen-day85/background.jpg")
+    center center no-repeat;
+  background-size: cover;
 }
 
-.app {
-  padding: 20px;
+#root {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+  align-items: center;
+}
+
+.nav-bar {
+  z-index: 1000;
+  background: white;
+  display: grid;
+  height: 80px;
+  align-self: stretch;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+  gap: 3px 10px;
+  margin-bottom: 20px;
+  justify-items: center;
+  align-items: center;
+  box-shadow: 0 -2rem 4.4rem 0 rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  color: rgba(0, 0, 0, 0.422);
+}
+
+.quiz {
+  background: white;
+  box-shadow: 0 -2rem 4.4rem 0 rgba(0, 0, 0, 0.3);
+  padding-top: 1rem;
+  padding-bottom: 2rem;
   max-width: 500px;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-}
 
-.score-section {
-  display: flex;
-  font-size: 24px;
-  align-items: center;
-}
+  .score-section {
+    display: flex;
+    font-size: 24px;
+    align-items: center;
+  }
 
-/* QUESTION/TIMER/LEFT SECTION */
-.question-section {
+  /* QUESTION/TIMER/LEFT SECTION */
+  .question-section {
+    width: 100%;
+    position: relative;
+  }
+
+  .question-count {
+    margin-bottom: 20px;
+  }
+
+  .question-count span {
+    font-size: 28px;
+  }
+
+  .question-text {
+    font-size: 1.2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  /* ANSWERS/RIGHT SECTION */
+  .answer-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+}
+img {
   width: 100%;
+}
+
+.question-image {
   position: relative;
-}
-
-.question-count {
-  margin-bottom: 20px;
-}
-
-.question-count span {
-  font-size: 28px;
-}
-
-.question-text {
-  margin-bottom: 12px;
-}
-
-/* ANSWERS/RIGHT SECTION */
-.answer-section {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+  .circle {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    transform: translateX(-50%) translateY(0%);
+    border-radius: 100%;
+    box-shadow: inset 0px 0px 3px 3px rgba(255, 255, 255, 0.473);
+    border: 3px solid red;
+    pointer-events: none;
+    &.hide {
+      display: none;
+    }
+  }
 }
 
 button {
@@ -61,6 +119,22 @@ button {
   border: 1px solid #222325;
   cursor: pointer;
   background: transparent;
+  & svg {
+    margin-right: 5px;
+  }
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a,
+button {
+  transition: all 0.3s ease;
+  &:hover {
+    transform: scale(1.05);
+  }
 }
 
 .correct {
@@ -69,16 +143,4 @@ button {
 
 .incorrect {
   background-color: #ff3333;
-}
-
-button:hover {
-  background-color: #555e7d;
-}
-
-button:focus {
-  outline: none;
-}
-
-button svg {
-  margin-right: 5px;
 }
