@@ -54,7 +54,7 @@ const questions : Array<Question> = [
 export default function App() {
   const [currQuestionIndex, setCurrQuestionIndex] = useState(0);
   const [quizTitle, setQuizTitle] = useState(
-    "Quiz: Can You Tell a Democrat's House from a Republican's House?"
+    "Can You Tell a Democrat's House from a Republican's House?"
   );
   const [showScore, setShowScore] = useState(false);
   const [score, setScore] = useState(0);
