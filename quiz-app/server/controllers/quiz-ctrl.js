@@ -45,6 +45,7 @@ getQuizSchema = async (req, res) => {
 
                 return res.status(200).json({ success: true, data: {
                     quiz: {
+                        quiz_id: quiz_id,
                         questions: _.map(quizzes[0].questions, (v) => v.id),
                         quiz_name: quizzes[0].name,
                         quiz_instructions: "test instructions"
