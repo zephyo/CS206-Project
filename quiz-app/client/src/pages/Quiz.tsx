@@ -27,7 +27,7 @@ interface Answer {
 }
 
 export default function Quiz() {
-  const [questionSchema, quizSchema] = useState<QuizSchema | null>(
+  const [quizSchema, setQuizSchema] = useState<QuizSchema | null>(
     null
   );
   const [currQuestion, setCurrQuestion] = useState<Question | null>(
@@ -43,19 +43,19 @@ export default function Quiz() {
   const FetchSchemaData = async () => {
     await api.getQuizSchema().then((results) => {
       console.log("schema", results);
-      quizSchema(results.data.data);
+      setQuizSchema(results.data.data);
     });
   };
 
   const FetchQuestionData = async () => {
     if (
-      questionSchema == null ||
-      currQuestionIndex >= questionSchema.quiz.questions.length
+      quizSchema == null ||
+      currQuestionIndex >= quizSchema.quiz.questions.length
     )
       return;
 
     await api
-      .getQuestionById(questionSchema.quiz.quiz_id, questionSchema.quiz.questions[currQuestionIndex])
+      .getQuestionById(quizSchema.quiz.quiz_id, quizSchema.quiz.questions[currQuestionIndex])
       .then((results) => {
         console.log(results);
         setCurrQuestion(results.data.data);
@@ -70,9 +70,9 @@ export default function Quiz() {
   // when the current question index changes, fetch question data
   useEffect(() => {
     FetchQuestionData();
-  }, [currQuestionIndex, questionSchema]);
+  }, [currQuestionIndex, quizSchema]);
 
-  if (questionSchema == null || currQuestion == null) {
+  if (quizSchema == null || currQuestion == null) {
     return <Loading />;
   }
 
@@ -83,10 +83,10 @@ export default function Quiz() {
 
   const sendAnswer = async (coordinates: Coordinates) => {
     await api.sendAnswer({
-      quiz_id: questionSchema.quiz.quiz_id,
-      response_id: questionSchema.response_id,
+      quiz_id: quizSchema.quiz.quiz_id,
+      response_id: quizSchema.response_id,
       answer_number: currAnswer?.answerId,
-      question_id: questionSchema.quiz.questions[currQuestionIndex],
+      question_id: quizSchema.quiz.questions[currQuestionIndex],
       area_selected: {
         x: coordinates.x,
         y: coordinates.y,
@@ -112,14 +112,14 @@ export default function Quiz() {
 
   return (
     <div className="quiz">
-      <h1>Quiz: {questionSchema.quiz.quiz_name}</h1>
-      <p className="subtitle">{questionSchema.quiz.quiz_instructions}</p>
-      {currQuestionIndex < questionSchema.quiz.questions.length ? (
+      <h1>Quiz: {quizSchema.quiz.quiz_name}</h1>
+      <p className="subtitle">{quizSchema.quiz.quiz_instructions}</p>
+      {currQuestionIndex < quizSchema.quiz.questions.length ? (
         <>
           <div className="question-section">
             <div className="question-count">
               <span>{currQuestionIndex + 1}</span>/
-              {questionSchema.quiz.questions.length}
+              {quizSchema.quiz.questions.length}
             </div>
             <div className="question-text">
               {currQuestion.question_text}
@@ -141,9 +141,9 @@ export default function Quiz() {
         <div>That's all!</div>
       )}
       <QuizEnd
-        quiz_id={questionSchema.quiz.quiz_id}
-        response_id={questionSchema.response_id}
-        length={questionSchema.quiz.questions.length}
+        quiz_id={quizSchema.quiz.quiz_id}
+        response_id={quizSchema.response_id}
+        length={quizSchema.quiz.questions.length}
         score={score}
         newspaper="New York Times"
       ></QuizEnd>
