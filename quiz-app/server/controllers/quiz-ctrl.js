@@ -4,9 +4,13 @@ const Response = require('../models/Response')
 
 /*
 {
-    "questions": [integer (of questionIDs)],
-    "quiz_name": string,
-    "quiz_instructions": string
+    quiz: {
+        "quiz_id": integer
+        "questions": [integer (of questionIDs)],
+        "quiz_name": string,
+        "quiz_instructions": string
+    },
+    response_id: integer
 }
 */
 getQuizSchema = async (req, res) => {
@@ -20,13 +24,12 @@ getQuizSchema = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `No Quizzes` })
         }
-        req.session.response_id = null
 
         //Hardcoded for only one quiz
-        req.session.quiz_id = 0
+        const quiz_id = 0
 
         const response = new Response({
-            quiz_id: req.session.quiz_id,
+            quiz_id: quiz_id,
             answers: []
         })
 
@@ -37,7 +40,18 @@ getQuizSchema = async (req, res) => {
         response
             .save()
             .then(() => {
-                req.session.response_id = response._id
+
+                const response_id = response._id
+
+                return res.status(200).json({ success: true, data: {
+                    quiz: {
+                        "questions": _.map(quizzes[0].questions, (v) => v.id),
+                        "quiz_name": quizzes[0].name,
+                        "quiz_instructions": "test instructions"
+                    },
+                    
+                }
+                })
             })
             .catch(error => {
                 return res.status(400).json({
@@ -45,12 +59,6 @@ getQuizSchema = async (req, res) => {
                     message: 'Response not created!',
                 })
             })
-
-        return res.status(200).json({ success: true, data: {
-            "questions": _.map(quizzes[0].questions, (v) => v.id),
-            "quiz_name": quizzes[0].name,
-            "quiz_instructions": "test instructions"
-        } })
     }).catch(err => console.log(err))
 }
 
@@ -132,7 +140,7 @@ getQuestionById = async (req, res) => {
 */
 getPhotoById = async (req, res) => {
     return res.status(200).json({ success: true, data: {
-        "url": req.protocol+"://"+req.host+":8000/photos/politicianshouses/"+req.params.id,
+        "url": req.protocol+"://"+req.hostname+":8000/photos/politicianshouses/"+req.params.id,
         "test": req.headers
     } })
 }
@@ -150,7 +158,7 @@ payload:
 */
 sendAnswer = (req, res) => {
     const body = req.body
-
+    console.log(req.session)
     if (!body) {
         return res.status(400).json({
             success: false,
