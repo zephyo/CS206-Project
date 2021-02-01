@@ -97,6 +97,28 @@ newQuizSchema = async (req, res) => {
         })
 }
 
+deleteQuizSchema = async (req, res) => {
+
+    const id = req.params.quiz_id
+
+    if (!id) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a quiz',
+        })
+    }
+
+    Quiz.deleteOne({ id: id }, function (err) {
+        if(err) return res.status(400).json({ success: false, error: err });
+        return res.status(201).json({
+            success: true,
+            message: 'Quiz deleted!',
+        })
+    })
+
+}
+
+
 
 /*
 {
@@ -250,5 +272,6 @@ module.exports = {
     getPhotoById,
     sendAnswer,
     getResults,
-    newQuizSchema
+    newQuizSchema,
+    deleteQuizSchema
 }

@@ -82,11 +82,10 @@ describe('Basic Quiz Functionality', () => {
         })
     });
     it('should succsesfully delete the quiz', (done) => {
-        axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
+        axios.delete('http://localhost:3000/api/schema/' + testingQuiz.id).then(res => {
             expect(res.status).to.equal(201)
             expect(res.data.success).to.be.true
-            expect(res.data.id).to.be.a('string')
-            expect(res.data.message).to.equal('Quiz created!')
+            expect(res.data.message).to.equal('Quiz deleted!')
             done()
         }).catch(err => {
             done(err)
