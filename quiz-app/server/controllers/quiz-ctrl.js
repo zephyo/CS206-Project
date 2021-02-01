@@ -15,14 +15,14 @@ const Response = require('../models/Response')
 */
 getQuizSchema = async (req, res) => {
 
-    await Quiz.findOne({ id: req.params.quiz_id }, (err, quizzes) => {
+    await Quiz.findOne({ id: req.params.quiz_id }, (err, quiz) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
-        if (!quizzes.length) {
+        if (!quiz) {
             return res
                 .status(404)
-                .json({ success: false, error: `No Quizzes` })
+                .json({ success: false, error: `No Quiz found` })
         }
 
         const quiz_id = req.params.quiz_id
@@ -45,9 +45,9 @@ getQuizSchema = async (req, res) => {
                 return res.status(200).json({ success: true, data: {
                     quiz: {
                         quiz_id: quiz_id,
-                        questions: _.map(quizzes[0].questions, (v) => v.id),
-                        quiz_name: quizzes[0].name,
-                        quiz_instructions: "test instructions"
+                        questions: _.map(quiz.questions, (v) => v.id),
+                        quiz_name: quiz.name,
+                        quiz_instructions: quiz
                     },
                     response_id: response_id
                 }
