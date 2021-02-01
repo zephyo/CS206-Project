@@ -41,7 +41,6 @@ const testingAnswer = {
     ],
 }
 
-response_id = 0; 
 
 describe('Basic Quiz Functionality', () => {
 
@@ -65,7 +64,7 @@ describe('Basic Quiz Functionality', () => {
             expect(res.data.data.quiz.quiz_instructions).to.equal(testingQuiz.instructions)
             expect(res.data.data.quiz.questions).to.deep.equal(_.map(testingQuiz.questions, (v) => v.id))
             console.log(res.data)
-            response_id = res.data.data.id
+            this.response_id = res.data.data.id
             done()
         }).catch(err => {
             done(err)
