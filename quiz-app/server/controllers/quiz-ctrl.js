@@ -15,7 +15,7 @@ const Response = require('../models/Response')
 */
 getQuizSchema = async (req, res) => {
 
-    await Quiz.find({}, (err, quizzes) => {
+    await Quiz.findOne({ id: req.params.quiz_id }, (err, quizzes) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -25,7 +25,6 @@ getQuizSchema = async (req, res) => {
                 .json({ success: false, error: `No Quizzes` })
         }
 
-        //Hardcoded for only one quiz
         const quiz_id = req.params.quiz_id
 
         const response = new Response({
