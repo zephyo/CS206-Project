@@ -29,9 +29,11 @@ jobs:
       with:
         mongodb-version: ${{ matrix.mongodb-version }}
     - name: building server
-      working-directory: server
+      working-directory: quiz-app/server
       run: yarn install
     - name: build overall project
+      working-directory: quiz-app
       run: yarn install
     - name: testing
+      working-directory: quiz-ap
       run: yarn ci
