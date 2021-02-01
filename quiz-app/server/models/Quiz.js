@@ -10,6 +10,7 @@ const Quiz = new Schema(
                 {answerId: Number, answerText: String, correct: Boolean}
             ]}
         ],
+        instructions: String
     },
     { timestamps: true },
 )
