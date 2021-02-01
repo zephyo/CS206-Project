@@ -3,13 +3,14 @@ const Schema = mongoose.Schema
 
 const Quiz = new Schema(
     {
-        id: Number,
+        id: {type: Number, required: true},
         name: String,
         questions: [
             { id: Number, text: String, photoId: String, answers: [
                 {answerId: Number, answerText: String, correct: Boolean}
             ]}
         ],
+        instructions: String
     },
     { timestamps: true },
 )

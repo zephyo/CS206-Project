@@ -5,7 +5,7 @@ const api = axios.create({
 })
 
 //our API
-export const getQuizSchema = () => api.get(`/schema`)
+export const getQuizSchema = (quiz_id) => api.get(`/schema/${quiz_id}`)
 //We keep track of responses based on your session. Need to call getQuizSchema each time a new quiz is started
 /*
 {
