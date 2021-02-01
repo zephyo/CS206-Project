@@ -23,6 +23,23 @@ const testingQuiz = {
     ],
 }
 
+const testingAnswer = {
+    quizId: 3,
+    answers: [
+        {
+        questionId: 0,
+        answerId: 1,
+        coordinates: {x: 3, y: 7}, 
+        },
+        {
+        questionId: 1,
+        answerId: 0,
+        coordinates: {x: 1, y: 2},
+        }  
+    ],
+}
+
+response_id = 0; 
 
 describe('Basic Quiz Functionality', () => {
 
@@ -37,41 +54,44 @@ describe('Basic Quiz Functionality', () => {
             done(err)
         })
     });
-    it('should succsesfully get the quiz', (done) => {
-        axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
-            expect(res.status).to.equal(201)
+    it('should successfully get the quiz', (done) => {
+        axios.get('http://localhost:3000/api/schema').then(res => {
+            expect(res.status).to.equal(200)
             expect(res.data.success).to.be.true
-            expect(res.data.id).to.be.a('string')
-            expect(res.data.message).to.equal('Quiz created!')
+            expect(res.data.data.quiz.quiz_id).to.equal(testingQuiz.id); 
+            expect(res.data.data.quiz)
+            console.log(res.data)
+            response_id = res.data.data.id
             done()
         }).catch(err => {
             done(err)
         })
     });
-    it('should succsesfully get the questions and make sure they"re right', (done) => {
-        axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
-            expect(res.status).to.equal(201)
+    it('should successfully get the second question', (done) => {
+        axios.get('http://localhost:3000/api/question/3/1').then(res => {
+            expect(res.status).to.equal(200)
             expect(res.data.success).to.be.true
-            expect(res.data.id).to.be.a('string')
-            expect(res.data.message).to.equal('Quiz created!')
+            expect(res.data.data.question_text).to.be.a('string')
+            expect(res.data.data.question_photo_id).to.be.a('string')
             done()
         }).catch(err => {
             done(err)
         })
     });
-    it('should succsesfully answer two questions', (done) => {
-        axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
-            expect(res.status).to.equal(201)
-            expect(res.data.success).to.be.true
-            expect(res.data.id).to.be.a('string')
-            expect(res.data.message).to.equal('Quiz created!')
+    it('should successfully answer two questions', (done) => {
+        axios.post('http://localhost:3000/api/answer', testingAnswer).then(res => {
+            console.log(res)
+            // expect(res.status).to.equal(200)
+            // expect(res.data.success).to.be.true
+            // expect(res.data.id).to.be.a('string')
+            // expect(res.data.message).to.equal('Response updated!')
             done()
         }).catch(err => {
             done(err)
         })
     });
-    it('should succsesfully ensure results returns the correct # of answers', (done) => {
-        axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
+    it('should successfully ensure results returns the correct # of answers', (done) => {
+        axios.post('http://localhost:3000/api/results/3/1', testingQuiz).then(res => {
             expect(res.status).to.equal(201)
             expect(res.data.success).to.be.true
             expect(res.data.id).to.be.a('string')
