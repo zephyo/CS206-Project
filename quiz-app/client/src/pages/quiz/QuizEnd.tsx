@@ -3,6 +3,8 @@ import api from "../../api";
 import Loading from "../../components/Loading";
 
 interface Props {
+  quiz_id: number;
+  response_id: number;
   score: number;
   length: number;
   newspaper: string;
@@ -19,7 +21,7 @@ function QuizEnd(props: Props) {
   );
 
   const FetchData = async () => {
-    await api.getEndResults().then((results) => {
+    await api.getEndResults(props.quiz_id, props.response_id).then((results) => {
       console.log("end results", results);
       setEndResults(results.data.data);
     });
@@ -39,11 +41,11 @@ function QuizEnd(props: Props) {
   return (
     <div className="score-section">
       You guessed {props.score} out of {props.length} correct, for a
-      score of {props.score / props.length} percent.
+      score of {props.score * 100 / props.length}%.
       <br />
       So far, {props.newspaper} readers have made {numTotal} guesses,
       <br />
-      correct {endResults.numCorrect / numTotal} percent of the time.
+      correct {endResults.numCorrect * 100 / numTotal}% of the time.
       <br></br>
       Here's what most gave it away: //TODO
     </div>
