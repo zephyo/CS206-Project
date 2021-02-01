@@ -25,21 +25,27 @@ const testingQuiz = {
     instructions: "test instructions"
 }
 
-const testingAnswer = {
-    quizId: 3,
-    answers: [
-        {
-        questionId: 0,
-        answerId: 1,
-        coordinates: {x: 3, y: 7}, 
-        },
-        {
-        questionId: 1,
-        answerId: 0,
-        coordinates: {x: 1, y: 2},
-        }  
-    ],
+const testingAnswer1 = {
+    quiz_id: 3,
+    answer_number: 0,
+    question_id: 0,
+    area_selected:{
+        x: 3,
+        y: 8
+    }
 }
+
+const testingAnswer2 = {
+    quiz_id: 3,
+    answer_number: 1,
+    question_id: 1,
+    area_selected:{
+        x: 7,
+        y: 7
+    }
+}
+
+
 
 response_id = 0; 
 
@@ -64,7 +70,7 @@ describe('Basic Quiz Functionality', () => {
             expect(res.data.data.quiz.quiz_name).to.equal(testingQuiz.name)
             expect(res.data.data.quiz.quiz_instructions).to.equal(testingQuiz.instructions)
             expect(res.data.data.quiz.questions).to.deep.equal(_.map(testingQuiz.questions, (v) => v.id))
-            console.log(res.data)
+            // console.log(res.data)
             response_id = res.data.data.id
             done()
         }).catch(err => {
@@ -82,24 +88,39 @@ describe('Basic Quiz Functionality', () => {
     //         done(err)
     //     })
     // });
-    // it('should successfully answer two questions', (done) => {
-    //     axios.post('http://localhost:3000/api/answer', testingAnswer).then(res => {
-    //         console.log(res)
-    //         // expect(res.status).to.equal(200)
-    //         // expect(res.data.success).to.be.true
-    //         // expect(res.data.id).to.be.a('string')
-    //         // expect(res.data.message).to.equal('Response updated!')
-    //         done()
-    //     }).catch(err => {
-    //         done(err)
-    //     })
-    // });
+    it('should successfully answer two questions', (done) => {
+        const testingAnswer1WithResponseId = _.assign({ 'response_id': response_id }, testingAnswer1)
+        console.log(response_id)
+        axios.post('http://localhost:3000/api/answer', testingAnswer1WithResponseId).then(res => {
+            
+            console.log(res)
+            
+            expect(res.status).to.equal(200)
+            expect(res.data.success).to.be.true
+            expect(res.data.id).to.be.a('string')
+            expect(res.data.message).to.equal('Response updated!')
+            done()
+        }).catch(err => {
+            done(err)
+        })
+        // axios.post('http://localhost:3000/api/answer', testingAnswer2).then(res => {
+        //     console.log(res)
+        //     expect(res.status).to.equal(200)
+        //     expect(res.data.success).to.be.true
+        //     expect(res.data.id).to.be.a('string')
+        //     expect(res.data.message).to.equal('Response updated!')
+        //     done()
+        // }).catch(err => {
+        //     done(err)
+        // })
+    });
     it('should successfully ensure results returns the correct # of answers', (done) => {
         axios.get('http://localhost:3000/api/results/' + testingQuiz.id + "/" + response_id).then(res => {
             expect(res.status).to.equal(200)
             expect(res.data.success).to.be.true
             expect(res.data.numCorrect).to.be.a('number')
-            expect(res.data.numWrong).to.equal(2)
+            expect(res.data.numWrong).to.equal(0)
+            expect(res.data.numCorrect).to.equal(0)
             done()
         }).catch(err => {
             done(err)
