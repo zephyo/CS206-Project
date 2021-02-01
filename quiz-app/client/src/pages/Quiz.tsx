@@ -5,9 +5,13 @@ import QuizEnd from "./quiz/QuizEnd";
 import Loading from "../components/Loading";
 
 export interface QuizSchema {
-  questions: Array<number>;
-  quiz_name: string;
-  quiz_instructions: string;
+  response_id: number;
+  quiz: {
+    quiz_id: number;
+    questions: Array<number>;
+    quiz_name: string;
+    quiz_instructions: string;
+  }
 }
 
 export interface Question {
@@ -46,12 +50,12 @@ export default function Quiz() {
   const FetchQuestionData = async () => {
     if (
       questionSchema == null ||
-      currQuestionIndex >= questionSchema.questions.length
+      currQuestionIndex >= questionSchema.quiz.questions.length
     )
       return;
 
     await api
-      .getQuestionById(questionSchema.questions[currQuestionIndex])
+      .getQuestionById(questionSchema.quiz.quiz_id, questionSchema.quiz.questions[currQuestionIndex])
       .then((results) => {
         console.log(results);
         setCurrQuestion(results.data.data);
@@ -79,8 +83,10 @@ export default function Quiz() {
 
   const sendAnswer = async (coordinates: Coordinates) => {
     await api.sendAnswer({
+      quiz_id: questionSchema.quiz.quiz_id,
+      response_id: questionSchema.response_id,
       answer_number: currAnswer?.answerId,
-      question_id: questionSchema.questions[currQuestionIndex],
+      question_id: questionSchema.quiz.questions[currQuestionIndex],
       area_selected: {
         x: coordinates.x,
         y: coordinates.y,
@@ -106,14 +112,14 @@ export default function Quiz() {
 
   return (
     <div className="quiz">
-      <h1>Quiz: {questionSchema.quiz_name}</h1>
-      <p className="subtitle">{questionSchema.quiz_instructions}</p>
-      {currQuestionIndex < questionSchema.questions.length ? (
+      <h1>Quiz: {questionSchema.quiz.quiz_name}</h1>
+      <p className="subtitle">{questionSchema.quiz.quiz_instructions}</p>
+      {currQuestionIndex < questionSchema.quiz.questions.length ? (
         <>
           <div className="question-section">
             <div className="question-count">
               <span>{currQuestionIndex + 1}</span>/
-              {questionSchema.questions.length}
+              {questionSchema.quiz.questions.length}
             </div>
             <div className="question-text">
               {currQuestion.question_text}
@@ -135,7 +141,9 @@ export default function Quiz() {
         <div>That's all!</div>
       )}
       <QuizEnd
-        length={questionSchema.questions.length}
+        quiz_id={questionSchema.quiz.quiz_id}
+        response_id={questionSchema.response_id}
+        length={questionSchema.quiz.questions.length}
         score={score}
         newspaper="New York Times"
       ></QuizEnd>

@@ -3,6 +3,8 @@ import api from "../../api";
 import Loading from "../../components/Loading";
 
 interface Props {
+  quiz_id: number;
+  response_id: number;
   score: number;
   length: number;
   newspaper: string;
@@ -19,7 +21,7 @@ function QuizEnd(props: Props) {
   );
 
   const FetchData = async () => {
-    await api.getEndResults().then((results) => {
+    await api.getEndResults(props.quiz_id, props.response_id).then((results) => {
       console.log("end results", results);
       setEndResults(results.data.data);
     });
