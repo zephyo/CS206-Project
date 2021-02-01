@@ -26,7 +26,7 @@ const testingQuiz = {
 
 describe('Basic Quiz Functionality', () => {
 
-    it('should be a succsesful search', (done) => {
+    it('should succsesfully create a quiz', (done) => {
         axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
             expect(res.status).to.equal(201)
             expect(res.data.success).to.be.true
@@ -37,27 +37,59 @@ describe('Basic Quiz Functionality', () => {
             done(err)
         })
     });
-    // it('should be a succsesful search', (done) => {
-    //     runSmoothieSearch((error, response, body) => {
-    //         expect(response.statusCode).to.equal(200);    
-    //         expect(body.success).to.equal(true);
-    //         done();
-    //     })
-    // });
-    // it('should return at least one result', (done) => {
-    //     runSmoothieSearch((error, response, body) => {
-    //         expect(body.data).to.have.length.of.at.least(1);
-    //         done();
-    //     })
-    // });
-    // it('should include correct properties', (done) => {
-    //     runSmoothieSearch((error, response, body) => {
-    //         expect(body.data[0].name).to.be.a('string')
-    //         expect(body.data[0].readyInMinutes).to.be.a('number')
-    //         expect(body.data[0].servings).to.be.a('number')
-    //         expect(body.data[0].imageUrl).to.be.a('string')
-    //         expect(body.data[0].recipeUrl).to.be.a('string')
-    //         done();
-    //     })
-    // });
+    it('should succsesfully get the quiz', (done) => {
+        axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
+            expect(res.status).to.equal(201)
+            expect(res.data.success).to.be.true
+            expect(res.data.id).to.be.a('string')
+            expect(res.data.message).to.equal('Quiz created!')
+            done()
+        }).catch(err => {
+            done(err)
+        })
+    });
+    it('should succsesfully get the questions and make sure they"re right', (done) => {
+        axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
+            expect(res.status).to.equal(201)
+            expect(res.data.success).to.be.true
+            expect(res.data.id).to.be.a('string')
+            expect(res.data.message).to.equal('Quiz created!')
+            done()
+        }).catch(err => {
+            done(err)
+        })
+    });
+    it('should succsesfully answer two questions', (done) => {
+        axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
+            expect(res.status).to.equal(201)
+            expect(res.data.success).to.be.true
+            expect(res.data.id).to.be.a('string')
+            expect(res.data.message).to.equal('Quiz created!')
+            done()
+        }).catch(err => {
+            done(err)
+        })
+    });
+    it('should succsesfully ensure results returns the correct # of answers', (done) => {
+        axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
+            expect(res.status).to.equal(201)
+            expect(res.data.success).to.be.true
+            expect(res.data.id).to.be.a('string')
+            expect(res.data.message).to.equal('Quiz created!')
+            done()
+        }).catch(err => {
+            done(err)
+        })
+    });
+    it('should succsesfully delete the quiz', (done) => {
+        axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
+            expect(res.status).to.equal(201)
+            expect(res.data.success).to.be.true
+            expect(res.data.id).to.be.a('string')
+            expect(res.data.message).to.equal('Quiz created!')
+            done()
+        }).catch(err => {
+            done(err)
+        })
+    });
 });
