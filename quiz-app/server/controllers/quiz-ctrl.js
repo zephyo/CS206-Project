@@ -4,9 +4,13 @@ const Response = require('../models/Response')
 
 /*
 {
-    "questions": [integer (of questionIDs)],
-    "quiz_name": string,
-    "quiz_instructions": string
+    quiz: {
+        "quiz_id": integer
+        "questions": [integer (of questionIDs)],
+        "quiz_name": string,
+        "quiz_instructions": string
+    },
+    response_id: integer
 }
 */
 getQuizSchema = async (req, res) => {
@@ -20,13 +24,12 @@ getQuizSchema = async (req, res) => {
                 .status(404)
                 .json({ success: false, error: `No Quizzes` })
         }
-        req.session.response_id = null
 
         //Hardcoded for only one quiz
-        req.session.quiz_id = 0
+        const quiz_id = 0
 
         const response = new Response({
-            quiz_id: req.session.quiz_id,
+            quiz_id: quiz_id,
             answers: []
         })
 
@@ -37,7 +40,19 @@ getQuizSchema = async (req, res) => {
         response
             .save()
             .then(() => {
-                req.session.response_id = response._id
+
+                const response_id = response._id
+
+                return res.status(200).json({ success: true, data: {
+                    quiz: {
+                        quiz_id: quiz_id,
+                        questions: _.map(quizzes[0].questions, (v) => v.id),
+                        quiz_name: quizzes[0].name,
+                        quiz_instructions: "test instructions"
+                    },
+                    response_id: response_id
+                }
+                })
             })
             .catch(error => {
                 return res.status(400).json({
@@ -45,12 +60,6 @@ getQuizSchema = async (req, res) => {
                     message: 'Response not created!',
                 })
             })
-
-        return res.status(200).json({ success: true, data: {
-            "questions": _.map(quizzes[0].questions, (v) => v.id),
-            "quiz_name": quizzes[0].name,
-            "quiz_instructions": "test instructions"
-        } })
     }).catch(err => console.log(err))
 }
 
@@ -97,8 +106,7 @@ newQuizSchema = async (req, res) => {
 }
 */
 getQuestionById = async (req, res) => {
-    //Hardcoded for only one quiz
-    await Quiz.findOne({ id: req.session.quiz_id || 0 }, (err, quiz) => {
+    await Quiz.findOne({ id: req.params.quiz_id }, (err, quiz) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -109,7 +117,7 @@ getQuestionById = async (req, res) => {
                 .json({ success: false, error: `Quiz not found` })
         }
 
-        question = _.find(quiz.questions, (q) => q.id == req.params.id)
+        question = _.find(quiz.questions, (q) => q.id == req.params.question_id)
 
         if (!question) {
             return res
@@ -132,7 +140,7 @@ getQuestionById = async (req, res) => {
 */
 getPhotoById = async (req, res) => {
     return res.status(200).json({ success: true, data: {
-        "url": req.protocol+"://"+req.host+":8000/photos/politicianshouses/"+req.params.id,
+        "url": req.protocol+"://"+req.hostname+":8000/photos/politicianshouses/"+req.params.id,
         "test": req.headers
     } })
 }
@@ -140,6 +148,8 @@ getPhotoById = async (req, res) => {
 /*
 payload:
 {
+    "quiz_id": integer,
+    "response_id": integer,
     "answer_number": integer,
     "question_id": integer,
     "area_selected":{
@@ -150,7 +160,6 @@ payload:
 */
 sendAnswer = (req, res) => {
     const body = req.body
-
     if (!body) {
         return res.status(400).json({
             success: false,
@@ -158,7 +167,7 @@ sendAnswer = (req, res) => {
         })
     }
 
-    Response.findOne({ _id: req.session.response_id}, (err, response) => {
+    Response.findOne({ _id: req.body.response_id}, (err, response) => {
         if (err || !response) {
             return res.status(404).json({
                 err,
@@ -198,7 +207,7 @@ sendAnswer = (req, res) => {
 */
 getResults = async (req, res) => {
     //Hardcoded for only one quiz
-    Quiz.findOne({id: req.session.quiz_id || 0}, (err, quiz) => {
+    Quiz.findOne({id: req.params.quiz_id || 0}, (err, quiz) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -209,7 +218,7 @@ getResults = async (req, res) => {
         }
         total_correct = 0; 
         total_wrong = 0; 
-        Response.findOne({_id: req.session.response_id}, (err, response) => {
+        Response.findOne({_id: req.params.response_id}, (err, response) => {
             if (err) {
                 return res.status(400).json({ success: false, error: err })
             }
@@ -225,7 +234,7 @@ getResults = async (req, res) => {
                 return quiz_question_answer.correct ? 1 : 0
             })
             total_wrong = quiz.questions.length - total_correct;
-            req.session.response_id = null; 
+            req.params.response_id = null; 
             return res.status(200).json({ success: true, data: {
                 "numCorrect" : total_correct,
                 "numWrong" : total_wrong
