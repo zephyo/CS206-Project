@@ -9,12 +9,16 @@ export const getQuizSchema = () => api.get(`/schema`)
 //We keep track of responses based on your session. Need to call getQuizSchema each time a new quiz is started
 /*
 {
-    "questions": [integer (of questionIDs)],
-    "quiz_name": string,
-    "quiz_instructions": string
+    "quiz": {
+        "quiz_id": integer
+        "questions": [integer (of questionIDs)],
+        "quiz_name": string,
+        "quiz_instructions": string
+    },
+    "response_id": integer
 }
 */
-export const getQuestionById = id => api.get(`/question/${id}`)
+export const getQuestionById = (quiz_id, question_id) => api.get(`/question/${quiz_id}/${question_id}`)
 /*
 {
     "question_text": string,
@@ -32,6 +36,8 @@ export const sendAnswer = payload => api.post(`/answer`, payload)
 /*
 payload:
 {
+    "quiz_id": integer,
+    "response_id": integer,
     "answer_number": integer,
     "question_id": integer,
     "area_selected":{
@@ -40,7 +46,7 @@ payload:
     }
 }
 */
-export const getEndResults = () => api.get(`/results`)
+export const getEndResults = (quiz_id, response_id) => api.get(`/results/${quiz_id}/${response_id}`)
 /*
 {
     "numCorrect": integer,
