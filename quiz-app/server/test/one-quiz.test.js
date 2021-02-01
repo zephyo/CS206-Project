@@ -9,7 +9,7 @@ const axios = require('axios')
 // delete the quiz
 
 const testingQuiz = {
-    id: 3,
+    id: "-1",
     name: "Republican or democrat house",
     questions: [
         { id: 0, text: "republican or democrat?", photoId: "Republican_(TedCruz).jpg", answers: [
@@ -21,6 +21,7 @@ const testingQuiz = {
             {answerId: 1, answerText: "democratic", correct: true}
         ]}
     ],
+    instructions: "test instructions"
 }
 
 const testingAnswer = {
@@ -55,11 +56,13 @@ describe('Basic Quiz Functionality', () => {
         })
     });
     it('should successfully get the quiz', (done) => {
-        axios.get('http://localhost:3000/api/schema').then(res => {
+        axios.get('http://localhost:3000/api/schema/'+testingQuiz.id).then(res => {
             expect(res.status).to.equal(200)
             expect(res.data.success).to.be.true
-            expect(res.data.data.quiz.quiz_id).to.equal(testingQuiz.id); 
-            expect(res.data.data.quiz)
+            expect(res.data.data.quiz.quiz_id).to.equal("" + testingQuiz.id) 
+            expect(res.data.data.quiz.quiz_name).to.equal(testingQuiz.name)
+            expect(res.data.data.quiz.quiz_instructions).to.equal(testingQuiz.instructions)
+            expect(res.data.data.quiz.questions).to.deep.equal(_.map(testingQuiz.questions, (v) => v.id))
             console.log(res.data)
             response_id = res.data.data.id
             done()
@@ -68,7 +71,7 @@ describe('Basic Quiz Functionality', () => {
         })
     });
     it('should successfully get the second question', (done) => {
-        axios.get('http://localhost:3000/api/question/3/1').then(res => {
+        axios.get('http://localhost:3000/api/question/').then(res => {
             expect(res.status).to.equal(200)
             expect(res.data.success).to.be.true
             expect(res.data.data.question_text).to.be.a('string')
