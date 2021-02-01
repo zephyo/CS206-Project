@@ -41,11 +41,11 @@ function QuizEnd(props: Props) {
   return (
     <div className="score-section">
       You guessed {props.score} out of {props.length} correct, for a
-      score of {props.score / props.length} percent.
+      score of {props.score * 100 / props.length}%.
       <br />
       So far, {props.newspaper} readers have made {numTotal} guesses,
       <br />
-      correct {endResults.numCorrect / numTotal} percent of the time.
+      correct {endResults.numCorrect * 100 / numTotal}% of the time.
       <br></br>
       Here's what most gave it away: //TODO
     </div>
