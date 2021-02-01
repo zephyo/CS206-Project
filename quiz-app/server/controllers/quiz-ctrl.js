@@ -26,7 +26,7 @@ getQuizSchema = async (req, res) => {
         }
 
         //Hardcoded for only one quiz
-        const quiz_id = 0
+        const quiz_id = req.params.quiz_id
 
         const response = new Response({
             quiz_id: quiz_id,
