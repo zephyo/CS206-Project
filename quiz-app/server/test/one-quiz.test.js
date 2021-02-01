@@ -71,7 +71,7 @@ describe('Basic Quiz Functionality', () => {
         })
     });
     it('should successfully get the second question', (done) => {
-        axios.get('http://localhost:3000/api/question/3/1').then(res => {
+        axios.get('http://localhost:3000/api/question/').then(res => {
             expect(res.status).to.equal(200)
             expect(res.data.success).to.be.true
             expect(res.data.data.question_text).to.be.a('string')
