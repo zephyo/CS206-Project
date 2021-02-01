@@ -10,7 +10,7 @@ const axios = require('axios')
 // delete the quiz
 
 const testingQuiz = {
-    id: "-1",
+    id: "5",
     name: "Republican or democrat house",
     questions: [
         { id: 0, text: "republican or democrat?", photoId: "Republican_(TedCruz).jpg", answers: [
@@ -71,17 +71,19 @@ describe('Basic Quiz Functionality', () => {
             done(err)
         })
     });
-    // it('should successfully get the second question', (done) => {
-    //     axios.get('http://localhost:3000/api/question/'+ ).then(res => {
-    //         expect(res.status).to.equal(200)
-    //         expect(res.data.success).to.be.true
-    //         expect(res.data.data.question_text).to.be.a('string')
-    //         expect(res.data.data.question_photo_id).to.be.a('string')
-    //         done()
-    //     }).catch(err => {
-    //         done(err)
-    //     })
-    // });
+    it('should successfully get the second question', (done) => {
+        axios.get('http://localhost:3000/api/question/' + testingQuiz.id + '/' + testingQuiz.questions[1].id).then(res => {
+            expect(res.status).to.equal(200)
+            expect(res.data.success).to.be.true
+            expect(res.data.data.question_text).to.equal(testingQuiz.questions[1].text)
+            expect(res.data.data.question_photo_id).to.equal(testingQuiz.questions[1].photoId)
+            console.log(_.map(testingQuiz.questions[1].answers, a => _.omit(a, ['_id'])))
+            expect(_.map(res.data.data.answers,  a => _.omit(a, ['_id']))).to.deep.equal(testingQuiz.questions[1].answers)
+            done()
+        }).catch(err => {
+            done(err)
+        })
+    });
     // it('should successfully answer two questions', (done) => {
     //     axios.post('http://localhost:3000/api/answer', testingAnswer).then(res => {
     //         console.log(res)
