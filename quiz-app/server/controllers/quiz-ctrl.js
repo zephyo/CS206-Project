@@ -47,7 +47,7 @@ getQuizSchema = async (req, res) => {
                         quiz_id: quiz_id,
                         questions: _.map(quiz.questions, (v) => v.id),
                         quiz_name: quiz.name,
-                        quiz_instructions: quiz
+                        quiz_instructions: quiz.instructions
                     },
                     response_id: response_id
                 }
