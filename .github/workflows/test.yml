@@ -35,5 +35,5 @@ jobs:
       working-directory: quiz-app
       run: yarn install
     - name: testing
-      working-directory: quiz-ap
+      working-directory: quiz-app
       run: yarn ci
