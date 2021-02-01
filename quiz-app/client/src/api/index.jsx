@@ -18,7 +18,7 @@ export const getQuizSchema = () => api.get(`/schema`)
     "response_id": integer
 }
 */
-export const getQuestionById = id => api.get(`/question/${quiz_id}/${question_id}`)
+export const getQuestionById = (quiz_id, question_id) => api.get(`/question/${quiz_id}/${question_id}`)
 /*
 {
     "question_text": string,
@@ -46,7 +46,7 @@ payload:
     }
 }
 */
-export const getEndResults = () => api.get(`/results/${quiz_id}/${response_id}`)
+export const getEndResults = (quiz_id, response_id) => api.get(`/results/${quiz_id}/${response_id}`)
 /*
 {
     "numCorrect": integer,
