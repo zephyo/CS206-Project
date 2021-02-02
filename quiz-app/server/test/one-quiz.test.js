@@ -79,7 +79,7 @@ describe('Basic Quiz Functionality', () => {
             expect(res.data.success).to.be.true
             expect(res.data.data.question_text).to.equal(testingQuiz.questions[1].text)
             expect(res.data.data.question_photo_id).to.equal(testingQuiz.questions[1].photoId)
-            expect(res.data.data.hiddenText).to.equal(testingQuiz.questions[1].hiddenText)
+            expect(res.data.data.hidden_text).to.equal(testingQuiz.questions[1].hiddenText)
             _.forEach(res.data.data.answers, (answer, index) => {
                 const model_answer = testingQuiz.questions[1].answers[index]
                 expect(answer.answerId).to.equal(model_answer.answerId)
@@ -94,7 +94,6 @@ describe('Basic Quiz Functionality', () => {
     });
     it('should successfully answer two questions', (done) => {
         const testingAnswer1WithResponseId = _.assign({ 'response_id': response_id }, testingAnswer1)
-        console.log(response_id)
         axios.post('http://localhost:3000/api/answer', testingAnswer1WithResponseId).then(res => {
             expect(res.status).to.equal(200)
             expect(res.data.success).to.be.true
@@ -117,7 +116,6 @@ describe('Basic Quiz Functionality', () => {
     it('should successfully ensure results returns the correct # of answers', (done) => {
         axios.get('http://localhost:3000/api/results/' + testingQuiz.id + "/" + response_id).then(res => {
             expect(res.status).to.equal(200)
-            console.log(res.data)
             expect(res.data.success).to.be.true
             expect(res.data.data.numWrong).to.equal(0)
             expect(res.data.data.numCorrect).to.equal(2)

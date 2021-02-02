@@ -150,7 +150,15 @@ getQuestionById = async (req, res) => {
         return res.status(200).json({ success: true, data: {
             "question_text": question.text,
             "question_photo_id": question.photoId,
-            "answers" : _.map(question.answers, (a) => _.assign({percentOfAnswer: 50}, a)),
+            "answers" : _.map(question.answers, (a) => {
+                return {
+                    percentOfAnswer: 50,
+                    answerId: a.answerId,
+                    answerText: a.answerText,
+                    correct: a.correct,
+                }
+            
+            }),
             "hidden_text": question.hiddenText
         } })
     }).catch(err => console.log(err))
