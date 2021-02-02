@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api";
 import Loading from "../../components/Loading";
-import CorrectAnswer from "./CorrectAnswer"
+import CorrectAnswer from "./CorrectAnswer";
 
 interface Props {
   // image source id
@@ -30,7 +30,7 @@ function QuizImage(props: Props) {
 
   const FetchData = async () => {
     await api.getPhotoById(props.id).then((results) => {
-      console.log('img ID in quizimage: ', props.id);
+      console.log("img ID in quizimage: ", props.id);
       console.log("img", results);
       setImgSrc(results.data.data.url);
     });
@@ -38,8 +38,9 @@ function QuizImage(props: Props) {
 
   // on mount, fetch data
   useEffect(() => {
+    console.log("new img id", props.id);
     FetchData();
-  }, []);
+  }, [props.id]);
 
   if (imgSrc == null) {
     return <Loading />;
@@ -71,28 +72,36 @@ function QuizImage(props: Props) {
 
   return (
     <>
-    <div className="question-image">
-      {props.interactable && (
-        <h2>Before we reveal the answer, tap the part that made you think that way.</h2>
-      )}
-      <img src={imgSrc} onMouseMove={onMouseMove} onClick={onClick} />
-      <p>
-        x: {coordinates.x}, y: {coordinates.y}
-      </p>
-      <div
-        className={"circle " + (clicked ? "show" : "hide")}
-        style={{ top: coordinates.y, left: coordinates.x }}
-      />
-    </div>
-    <div>
-    {showCorrectAnswer ? (
-        <CorrectAnswer
-          is_correct={props.is_correct}
-          politician_name={props.politician_name}
-        ></CorrectAnswer>
-      ) : <div></div>
-    }
-    </div>
+      <div className="question-image">
+        {props.interactable && (
+          <h2>
+            Before we reveal the answer, tap the part that made you
+            think that way.
+          </h2>
+        )}
+        <img
+          src={imgSrc}
+          onMouseMove={onMouseMove}
+          onClick={onClick}
+        />
+        <p>
+          x: {coordinates.x}, y: {coordinates.y}
+        </p>
+        <div
+          className={"circle " + (clicked ? "show" : "hide")}
+          style={{ top: coordinates.y, left: coordinates.x }}
+        />
+      </div>
+      <div>
+        {showCorrectAnswer ? (
+          <CorrectAnswer
+            is_correct={props.is_correct}
+            politician_name={props.politician_name}
+          ></CorrectAnswer>
+        ) : (
+          <div></div>
+        )}
+      </div>
     </>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
-import CorrectAnswer from "./quiz/CorrectAnswer"
+import CorrectAnswer from "./quiz/CorrectAnswer";
 import QuizImage, { Coordinates } from "./quiz/QuizImage";
 import QuizEnd from "./quiz/QuizEnd";
 import Loading from "../components/Loading";
@@ -12,7 +12,7 @@ export interface QuizSchema {
     questions: Array<number>;
     quiz_name: string;
     quiz_instructions: string;
-  }
+  };
 }
 
 export interface Question {
@@ -58,9 +58,12 @@ export default function Quiz() {
       return;
 
     await api
-      .getQuestionById(quizSchema.quiz.quiz_id, quizSchema.quiz.questions[currQuestionIndex])
+      .getQuestionById(
+        quizSchema.quiz.quiz_id,
+        quizSchema.quiz.questions[currQuestionIndex]
+      )
       .then((results) => {
-        console.log(results);
+        console.log("new question", results);
         setCurrQuestion(results.data.data);
       });
   };
@@ -130,8 +133,11 @@ export default function Quiz() {
               {currQuestion.question_text}
             </div>
           </div>
-          <QuizImage id={currQuestion.question_photo_id} is_correct={currAnswer?.correct}
-          politician_name={currQuestion.hidden_text}/>
+          <QuizImage
+            id={currQuestion.question_photo_id}
+            is_correct={currAnswer?.correct}
+            politician_name={currQuestion.hidden_text}
+          />
           <div className="answer-section">
             {currQuestion.answers.map((answerOption, i) => (
               <button
