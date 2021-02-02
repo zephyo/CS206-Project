@@ -123,7 +123,7 @@ deleteQuizSchema = async (req, res) => {
 {
     "question_text": string,
     "question_photo_id": integer,
-    "answers" : [{answerId: Number, answerText: String, correct: Boolean}],
+    "answers" : [{answerId: Number, answerText: String, correct: Boolean, percentOfAnswer: Number}],
     "hidden_text": string
 }
 */
@@ -150,7 +150,7 @@ getQuestionById = async (req, res) => {
         return res.status(200).json({ success: true, data: {
             "question_text": question.text,
             "question_photo_id": question.photoId,
-            "answers" : question.answers,
+            "answers" : _.map(question.answers, (a) => _.assign({percentOfAnswer: 50}, a)),
             "hidden_text": question.hiddenText
         } })
     }).catch(err => console.log(err))

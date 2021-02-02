@@ -13,11 +13,11 @@ const testingQuiz = {
     id: "5",
     name: "Republican or democrat house",
     questions: [
-        { id: 0, text: "republican or democrat?", photoId: "Republican_(TedCruz).jpg", answers: [
+        { id: 0, text: "republican or democrat?", hiddenText: "Ted Cruz", photoId: "Republican_(TedCruz).jpg", answers: [
             {answerId: 0, answerText: "republican", correct: true}, 
             {answerId: 1, answerText: "democratic", correct: false}
         ]},
-        { id: 1, text: "republican or democrat?", photoId: "Democrat_(BernieSanders).png", answers: [
+        { id: 1, text: "republican or democrat?", hiddenText: "Bernie Sanders", photoId: "Democrat_(BernieSanders).png", answers: [
             {answerId: 0, answerText: "republican", correct: false}, 
             {answerId: 1, answerText: "democratic", correct: true}
         ]}
@@ -79,7 +79,14 @@ describe('Basic Quiz Functionality', () => {
             expect(res.data.success).to.be.true
             expect(res.data.data.question_text).to.equal(testingQuiz.questions[1].text)
             expect(res.data.data.question_photo_id).to.equal(testingQuiz.questions[1].photoId)
-            expect(_.map(res.data.data.answers,  a => _.omit(a, ['_id']))).to.deep.equal(testingQuiz.questions[1].answers)
+            expect(res.data.data.hiddenText).to.equal(testingQuiz.questions[1].hiddenText)
+            _.forEach(res.data.data.answers, (answer, index) => {
+                const model_answer = testingQuiz.questions[1].answers[index]
+                expect(answer.answerId).to.equal(model_answer.answerId)
+                expect(answer.answerText).to.equal(model_answer.answerText)
+                expect(answer.correct).to.equal(model_answer.correct)
+                expect(answer.percentOfAnswer).to.be.a('number')
+            })
             done()
         }).catch(err => {
             done(err)
