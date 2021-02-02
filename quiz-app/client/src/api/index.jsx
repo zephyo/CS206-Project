@@ -23,7 +23,8 @@ export const getQuestionById = (quiz_id, question_id) => api.get(`/question/${qu
 {
     "question_text": string,
     "question_photo_id": string,
-    "answers" : [{answerId: Number, answerText: String, correct: Boolean}]
+    "answers" : [{answerId: Number, answerText: String, correct: Boolean}],
+    "hidden_text": string
 }
 */
 export const getPhotoById = id => api.get(`/photo/${id}`)

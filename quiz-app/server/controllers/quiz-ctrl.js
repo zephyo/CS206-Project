@@ -123,7 +123,8 @@ deleteQuizSchema = async (req, res) => {
 {
     "question_text": string,
     "question_photo_id": integer,
-    "answers" : [{answerId: Number, answerText: String, correct: Boolean}]
+    "answers" : [{answerId: Number, answerText: String, correct: Boolean}],
+    "hidden_text": string
 }
 */
 getQuestionById = async (req, res) => {
@@ -149,7 +150,8 @@ getQuestionById = async (req, res) => {
         return res.status(200).json({ success: true, data: {
             "question_text": question.text,
             "question_photo_id": question.photoId,
-            "answers" : question.answers
+            "answers" : question.answers,
+            "hidden_text": question.hiddenText
         } })
     }).catch(err => console.log(err))
 }
