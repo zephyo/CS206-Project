@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
+import CorrectAnswer from "./quiz/CorrectAnswer"
 import QuizImage, { Coordinates } from "./quiz/QuizImage";
 import QuizEnd from "./quiz/QuizEnd";
 import Loading from "../components/Loading";
@@ -18,6 +19,7 @@ export interface Question {
   question_text: string;
   question_photo_id: string;
   answers: Array<Answer>;
+  hidden_text: string;
 }
 
 interface Answer {
@@ -107,6 +109,8 @@ export default function Quiz() {
         setAskForCoords={setAskForCoords}
         sendAnswer={sendAnswer}
         interactable={true}
+        is_correct={currAnswer?.correct}
+        politician_name={currQuestion.hidden_text}
       />
     );
   }
@@ -126,7 +130,8 @@ export default function Quiz() {
               {currQuestion.question_text}
             </div>
           </div>
-          <QuizImage id={currQuestion.question_photo_id} />
+          <QuizImage id={currQuestion.question_photo_id} is_correct={currAnswer?.correct}
+          politician_name={currQuestion.hidden_text}/>
           <div className="answer-section">
             {currQuestion.answers.map((answerOption, i) => (
               <button

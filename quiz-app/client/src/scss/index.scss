@@ -58,7 +58,7 @@ body {
 
   .score-section {
     display: flex;
-    font-size: 24px;
+    font-size: 20px;
     align-items: center;
   }
 
@@ -79,6 +79,13 @@ body {
   .question-text {
     font-size: 1.2rem;
     margin-bottom: 1.2rem;
+  }
+
+  .correct-answer-text {
+    display: flex;
+    font-size: 24px;
+    align-items: center;
+    font-weight: bold;
   }
 
   /* ANSWERS/RIGHT SECTION */
