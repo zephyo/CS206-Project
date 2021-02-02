@@ -24,6 +24,7 @@ interface Answer {
   answerId: string;
   answerText: string;
   correct: boolean;
+  percentOfAnswer: number;
 }
 
 export default function Quiz() {
@@ -146,6 +147,7 @@ export default function Quiz() {
         length={quizSchema.quiz.questions.length}
         score={score}
         newspaper="New York Times"
+        percent_of_answer={currQuestion.answers[0].percentOfAnswer}
       ></QuizEnd>
     </div>
   );

@@ -8,6 +8,7 @@ interface Props {
   score: number;
   length: number;
   newspaper: string;
+  percent_of_answer: number;
 }
 
 interface EndResult {
@@ -45,9 +46,9 @@ function QuizEnd(props: Props) {
       <br />
       So far, {props.newspaper} readers have made {numTotal} guesses,
       <br />
-      correct {endResults.numCorrect * 100 / numTotal}% of the time.
+      correct {props.percent_of_answer / numTotal}% of the time.
       <br></br>
-      Here's what most gave it away: //TODO
+      {/* Here's what most gave it away: //TODO */}
     </div>
   );
 }
