@@ -41,7 +41,7 @@ export default function Quiz() {
   const [askForData, setAskForCoords] = useState(false);
 
   const FetchSchemaData = async () => {
-    await api.getQuizSchema().then((results) => {
+    await api.getQuizSchema(0).then((results) => {
       console.log("schema", results);
       setQuizSchema(results.data.data);
     });
