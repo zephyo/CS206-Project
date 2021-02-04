@@ -1,146 +1,234 @@
 @import url("https://fonts.googleapis.com/css2?family=Rubik&display=swap");
 
+$color-2: rgb(14, 86, 137);
 body {
-  margin: 0;
-  font-family: "Rubik", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: url("https://cdn.arnellebalane.com/images/codepen-day85/background.jpg")
-    center center no-repeat;
-  background-size: cover;
-}
-
-#root {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: stretch;
-  align-items: center;
-}
-
-.nav-bar {
-  z-index: 1000;
-  background: white;
-  display: grid;
-  height: 80px;
-  align-self: stretch;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-template-rows: 1fr;
-  gap: 3px 10px;
-  margin-bottom: 20px;
-  justify-items: center;
-  align-items: center;
-  box-shadow: 0 -2rem 4.4rem 0 rgba(0, 0, 0, 0.3);
-}
-
-.subtitle {
-  color: rgba(0, 0, 0, 0.422);
-}
-
-.quiz {
-  background: white;
-  box-shadow: 0 -2rem 4.4rem 0 rgba(0, 0, 0, 0.3);
-  padding-top: 1rem;
-  padding-bottom: 2rem;
-  max-width: 500px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-
-  .score-section {
-    display: flex;
-    font-size: 24px;
-    align-items: center;
-  }
-
-  /* QUESTION/TIMER/LEFT SECTION */
-  .question-section {
-    width: 100%;
-    position: relative;
-  }
-
-  .question-count {
-    margin-bottom: 20px;
-  }
-
-  .question-count span {
-    font-size: 28px;
-  }
-
-  .question-text {
-    font-size: 1.2rem;
-    margin-bottom: 1.2rem;
-  }
-
-  /* ANSWERS/RIGHT SECTION */
-  .answer-section {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-}
-img {
-  width: 100%;
-}
-
-.question-image {
-  position: relative;
-  .circle {
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    transform: translateX(-50%) translateY(0%);
-    border-radius: 100%;
-    box-shadow: inset 0px 0px 3px 3px rgba(255, 255, 255, 0.473);
-    border: 3px solid red;
-    pointer-events: none;
-    &.hide {
-      display: none;
-    }
-  }
+	margin: 0;
+	font-family: "Rubik", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	overflow: hidden;
+	&:before {
+		content: "";
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background: url("https://cdn.arnellebalane.com/images/codepen-day85/background.jpg")
+			center center no-repeat;
+		opacity: 0.3;
+		background-size: cover;
+	}
 }
 
 button {
-  font-size: 16px;
-  display: flex;
-  padding: 25px;
-  margin-bottom: 5px;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid #222325;
-  cursor: pointer;
-  background: transparent;
-  & svg {
-    margin-right: 5px;
-  }
+	font-size: 16px;
+	display: flex;
+	padding: 25px;
+	margin-bottom: 5px;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid #222325;
+	cursor: pointer;
+	background: transparent;
+	& svg {
+		margin-right: 5px;
+	}
 }
 
 a {
-  text-decoration: none;
-  color: black;
+	text-decoration: none;
+	color: black;
 }
 
 a,
 button {
-  transition: all 0.3s ease;
-  &:hover {
-    transform: scale(1.05);
-  }
+	transition: all 0.3s ease;
+	&:hover {
+		transform: scale(1.05);
+	}
+}
+
+#root {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
+	align-items: center;
+}
+
+.nav-bar {
+	z-index: 1000;
+	background: white;
+	display: grid;
+	height: 80px;
+	align-self: stretch;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: 1fr;
+	gap: 3px 10px;
+	margin-bottom: 20px;
+	justify-items: center;
+	align-items: center;
+	box-shadow: 0 -2rem 4.4rem 0 rgba(0, 0, 0, 0.3);
+	text-transform: uppercase;
+
+	& .name {
+		font-weight: 700;
+	}
+
+	.left {
+		display: grid;
+		grid-template-columns: 30px 1fr;
+		gap: 15px;
+		justify-items: start;
+		align-items: center;
+	}
+
+	.right {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		gap: 40px;
+		justify-items: end;
+		align-items: center;
+	}
+}
+
+.special-btn {
+	background-color: transparent;
+	border: 1px solid $color-2;
+	border-radius: 100px;
+	padding: 0.5em 1.5em;
+	margin: 5px;
+	* {
+		color: $color-2;
+	}
+	&:hover {
+		background-color: $color-2;
+		background-position: -100% 100%;
+
+		* {
+			color: rgba(255, 255, 255, 1);
+		}
+	}
+}
+
+.center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.col {
+	flex-direction: column;
+}
+
+.size16 {
+	font-size: 16px;
+}
+
+.home {
+	margin-top: 10vh;
+}
+
+.subtitle {
+	color: rgba(0, 0, 0, 0.422);
+}
+
+.quiz {
+	overflow-y: scroll;
+	background: white;
+	box-shadow: 0 -2rem 4.4rem 0 rgba(0, 0, 0, 0.3);
+	padding-top: 1rem;
+	padding-bottom: 2rem;
+	// margin-bottom: 1.5rem;
+	max-width: 800px;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	// justify-content: space-evenly;
+
+	.score-section {
+		font-size: 20px;
+		padding-left: 15px;
+		padding-right: 15px;
+		margin-top: 30px;
+	}
+
+	/* QUESTION/TIMER/LEFT SECTION */
+	.question-section {
+		width: 100%;
+		position: relative;
+	}
+
+	.question-count {
+		margin-bottom: 20px;
+	}
+
+	.question-count span {
+		font-size: 28px;
+	}
+
+	.question-text {
+		font-size: 1.2rem;
+		margin-bottom: 1.2rem;
+	}
+
+	.correct-answer-text {
+		display: flex;
+		font-size: 24px;
+		align-items: center;
+		font-weight: bold;
+	}
+
+	/* ANSWERS/RIGHT SECTION */
+	.answer-section {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+}
+
+.question-image {
+	position: relative;
+	margin-right: 15px;
+	margin-left: 15px;
+	max-width: 50vw;
+
+	img {
+		width: 100%;
+	}
+
+	.circle {
+		position: absolute;
+		width: 80px;
+		height: 80px;
+		transform: translateX(-50%) translateY(0%);
+		border-radius: 100%;
+		box-shadow: inset 0px 0px 3px 3px rgba(255, 255, 255, 0.473);
+		border: 3px solid red;
+		pointer-events: none;
+		&.hide {
+			display: none;
+		}
+	}
 }
 
 .correct {
-  background-color: #2f922f;
+	background-color: #2f922f;
 }
 
 .incorrect {
-  background-color: #ff3333;
+	background-color: #ff3333;
 }

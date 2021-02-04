@@ -4,9 +4,6 @@ class Links extends Component {
     render() {
         return (
             <>
-                <Link to="/">
-                    Quiz App
-                </Link>
                 <Link to="/quiz/1234" >
                     Test Quiz
                 </Link>

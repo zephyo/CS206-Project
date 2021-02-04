@@ -6,7 +6,7 @@ const Quiz = new Schema(
         id: {type: Number, required: true},
         name: String,
         questions: [
-            { id: Number, text: String, photoId: String, answers: [
+            { id: Number, text: String, hiddenText: String, photoId: String, answers: [
                 {answerId: Number, answerText: String, correct: Boolean}
             ]}
         ],
