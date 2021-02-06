@@ -12,12 +12,13 @@ const axios = require('axios')
 const testingQuiz = {
     id: "5",
     name: "Republican or democrat house",
+    
     questions: [
-        { id: 0, text: "republican or democrat?", hiddenText: "Ted Cruz", photoId: "Republican_(TedCruz).jpg", answers: [
+        { id: 0, type: "multiple_choice", text: "republican or democrat?", hiddenText: "Ted Cruz", photoId: "Republican_(TedCruz).jpg", answers: [
             {answerId: 0, answerText: "republican", correct: true}, 
             {answerId: 1, answerText: "democratic", correct: false}
         ]},
-        { id: 1, text: "republican or democrat?", hiddenText: "Bernie Sanders", photoId: "Democrat_(BernieSanders).png", answers: [
+        { id: 1, type: "multiple_choice", text: "republican or democrat?", hiddenText: "Bernie Sanders", photoId: "Democrat_(BernieSanders).png", answers: [
             {answerId: 0, answerText: "republican", correct: false}, 
             {answerId: 1, answerText: "democratic", correct: true}
         ]}
@@ -27,26 +28,30 @@ const testingQuiz = {
 
 const testingAnswer1 = {
     quiz_id: 3,
-    answer_number: 0,
     question_id: 0,
-    area_selected:{
-        x: 3,
-        y: 8
+    answer: {
+        answer_number: 0,
+        area_selected:{
+            x: 3,
+            y: 8
+        }
     }
 }
 
 const testingAnswer2 = {
     quiz_id: 3,
-    answer_number: 1,
     question_id: 1,
-    area_selected:{
-        x: 7,
-        y: 7
+    answer: {
+        answer_number: 1,
+        area_selected:{
+            x: 7,
+            y: 7
+        }
     }
 }
 
 
-describe('Basic Quiz Functionality', () => {
+describe('Basic Multiple Choice Quiz Functionality', () => {
     var response_id
     it('should succsesfully create a quiz', (done) => {
         axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
@@ -78,12 +83,14 @@ describe('Basic Quiz Functionality', () => {
             expect(res.status).to.equal(200)
             expect(res.data.success).to.be.true
             expect(res.data.data.question_text).to.equal(testingQuiz.questions[1].text)
+            expect(res.data.data.question_type).to.equal(testingQuiz.questions[1].type)
             expect(res.data.data.question_photo_id).to.equal(testingQuiz.questions[1].photoId)
             expect(res.data.data.hidden_text).to.equal(testingQuiz.questions[1].hiddenText)
             _.forEach(res.data.data.answers, (answer, index) => {
                 const model_answer = testingQuiz.questions[1].answers[index]
                 expect(answer.answerId).to.equal(model_answer.answerId)
                 expect(answer.answerText).to.equal(model_answer.answerText)
+                expect(answer.answerPhoto).to.be(null)
                 expect(answer.correct).to.equal(model_answer.correct)
                 expect(answer.percentOfAnswer).to.be.a('number')
             })
