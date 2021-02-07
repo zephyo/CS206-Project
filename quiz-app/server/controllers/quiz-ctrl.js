@@ -266,22 +266,30 @@ getResults = async (req, res) => {
                     .status(404)
                     .json({ success: false, error: `Response not found` })
             }
-
+            num_questions = 0
             total_correct = _.sumBy(response.answers, (response_answer) => {
                 quiz_question = _.find(quiz.questions, (quiz_question) => quiz_question.id == response_answer.questionId)
                 switch (quiz_question.question_type){
                     case 'multiple_choice':
+                        num_questions += 1
                         quiz_question_answer = _.find(quiz_question.answers, (quiz_question_answer) => quiz_question_answer.answerId == response_answer.answer.answer_number)
                         return quiz_question_answer.correct
                     case 'ranking':
-                        //TODO need to check answers
-                        return 0 
+                        index = 0
+                        return _.sumBy(response_answer.answer.answer_order, (answerId) => {
+                            num_questions += 1
+                            quiz_question_answer = _.find(quiz_question.answers, (quiz_question_answer) => quiz_question_answer.answerId == answerId)
+                            toReturn = quiz_question_answer.correct == index ? 1 : 0
+                            index += 1
+                            return toReturn
+                        })
                     default:
                         return 0
                 }
             })
+            console.log(num_questions)
             console.log(total_correct)
-            total_wrong = quiz.questions.length - total_correct;
+            total_wrong = num_questions - total_correct;
             req.params.response_id = null; 
             return res.status(200).json({ success: true, data: {
                 "numCorrect" : total_correct,

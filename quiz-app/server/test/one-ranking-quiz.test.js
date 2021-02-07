@@ -117,8 +117,8 @@ describe('Basic Ranking Quiz Functionality', () => {
         axios.get('http://localhost:3000/api/results/' + testingQuiz.id + "/" + response_id).then(res => {
             expect(res.status).to.equal(200)
             expect(res.data.success).to.be.true
-            expect(res.data.data.numWrong).to.equal(0)
-            expect(res.data.data.numCorrect).to.equal(2)
+            expect(res.data.data.numWrong).to.equal(2)
+            expect(res.data.data.numCorrect).to.equal(4)
             done()
         }).catch(err => {
             done(err)
