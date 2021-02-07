@@ -12,6 +12,7 @@ const axios = require('axios')
 const testingQuiz = {
     id: "6",
     name: "Covid Vaccine Priority Ranking",
+    photo_base_url: "stateflags",
     questions: [
         { id: 0, question_type: "ranking", text: "Rank the COVID Vaccine Priority in the state of Georgia", photoId: "Republican_(TedCruz).jpg", answers: [
             {answerId: 0, photoText: "Republican_(TedCruz).jpg", answerText: "Healthcare worker", correct: 0}, 
