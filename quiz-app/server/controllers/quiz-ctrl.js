@@ -173,6 +173,7 @@ getQuestionById = async (req, res) => {
 }
 */
 getPhotoById = async (req, res) => {
+    // TODO need to add in a way to add the base URL to the quiz Schema
     return res.status(200).json({ success: true, data: {
         "url": req.protocol+"://"+req.hostname+":8000/photos/politicianshouses/"+req.params.id,
         "test": req.headers

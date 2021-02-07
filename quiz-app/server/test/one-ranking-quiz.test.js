@@ -10,48 +10,41 @@ const axios = require('axios')
 // delete the quiz
 
 const testingQuiz = {
-    id: "5",
-    name: "Republican or democrat house",
-    
+    id: "6",
+    name: "Covid Vaccine Priority Ranking",
     questions: [
-        { id: 0, question_type: "multiple_choice", text: "republican or democrat?", hiddenText: "Ted Cruz", photoId: "Republican_(TedCruz).jpg", answers: [
-            {answerId: 0, answerText: "republican", correct: 1}, 
-            {answerId: 1, answerText: "democratic", correct: 0}
+        { id: 0, question_type: "ranking", text: "Rank the COVID Vaccine Priority in the state of Georgia", photoId: "Republican_(TedCruz).jpg", answers: [
+            {answerId: 0, photoText: "Republican_(TedCruz).jpg", answerText: "Healthcare worker", correct: 0}, 
+            {answerId: 1, photoText: "Republican_(TedCruz).jpg", answerText: "55 year old person", correct: 1},
+            {answerId: 2, photoText: "Republican_(TedCruz).jpg", answerText: "Teenager", correct: 2}
         ]},
-        { id: 1, question_type: "multiple_choice", text: "republican or democrat?", hiddenText: "Bernie Sanders", photoId: "Democrat_(BernieSanders).png", answers: [
-            {answerId: 0, answerText: "republican", correct: 0}, 
-            {answerId: 1, answerText: "democratic", correct: 1}
+        { id: 1, question_type: "ranking", text: "Rank the COVID Vaccine Priority in the state of Florida", photoId: "Democrat_(BernieSanders).png", answers: [
+            {answerId: 0, photoText: "Republican_(TedCruz).jpg", answerText: "Healthcare worker", correct: 1}, 
+            {answerId: 1, photoText: "Republican_(TedCruz).jpg", answerText: "55 year old person", correct: 0},
+            {answerId: 2, photoText: "Republican_(TedCruz).jpg", answerText: "Teenager", correct: 2}
         ]}
     ],
-    instructions: "test instructions"
+    instructions: "Drag and rank the quiz"
 }
 
 const testingAnswer1 = {
-    quiz_id: 3,
+    quiz_id: 6,
     question_id: 0,
     answer: {
-        answer_number: 0,
-        area_selected:{
-            x: 3,
-            y: 8
-        }
+        answer_order: [0, 1, 2]
     }
 }
 
 const testingAnswer2 = {
-    quiz_id: 3,
+    quiz_id: 6,
     question_id: 1,
     answer: {
-        answer_number: 1,
-        area_selected:{
-            x: 7,
-            y: 7
-        }
+        answer_order: [0, 1, 2]
     }
 }
 
 
-describe('Basic Multiple Choice Quiz Functionality', () => {
+describe('Basic Ranking Quiz Functionality', () => {
     var response_id
     it('should succsesfully create a quiz', (done) => {
         axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
@@ -85,12 +78,12 @@ describe('Basic Multiple Choice Quiz Functionality', () => {
             expect(res.data.data.question_text).to.equal(testingQuiz.questions[1].text)
             expect(res.data.data.question_type).to.equal(testingQuiz.questions[1].question_type)
             expect(res.data.data.question_photo_id).to.equal(testingQuiz.questions[1].photoId)
-            expect(res.data.data.hidden_text).to.equal(testingQuiz.questions[1].hiddenText)
+            expect(res.data.data.hidden_text).to.be.an('undefined')
             _.forEach(res.data.data.answers, (answer, index) => {
                 const model_answer = testingQuiz.questions[1].answers[index]
                 expect(answer.answerId).to.equal(model_answer.answerId)
                 expect(answer.answerText).to.equal(model_answer.answerText)
-                expect(answer.answerPhoto).to.be.an('undefined')
+                expect(answer.answerPhoto).to.equal(model_answer.answerPhoto)
                 expect(answer.correct).to.equal(model_answer.correct)
                 expect(answer.percentOfAnswer).to.be.a('number')
             })
