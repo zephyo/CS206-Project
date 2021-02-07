@@ -173,21 +173,11 @@ getQuestionById = async (req, res) => {
 }
 */
 getPhotoById = async (req, res) => {
-    await Quiz.findOne({ id: req.params.quiz_id }, (err, quiz) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
-
-        if (!quiz) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Quiz not found` })
-        }
-
-        return res.status(200).json({ success: true, data: {
-            "url": req.protocol+"://"+req.hostname+":8000/photos/" + quiz.photo_base_url + "/"+req.params.id,
-        } })
-    }).catch(err => console.log(err))
+    // TODO need to add in a way to add the base URL to the quiz Schema
+    return res.status(200).json({ success: true, data: {
+        "url": req.protocol+"://"+req.hostname+":8000/photos/politicianshouses/"+req.params.id,
+        "test": req.headers
+    } })
 }
 
 /*

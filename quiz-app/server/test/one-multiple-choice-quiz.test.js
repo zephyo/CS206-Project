@@ -12,7 +12,7 @@ const axios = require('axios')
 const testingQuiz = {
     id: "5",
     name: "Republican or democrat house",
-    photo_base_url: "politicianshouses",
+    
     questions: [
         { id: 0, question_type: "multiple_choice", text: "republican or democrat?", hiddenText: "Ted Cruz", photoId: "Republican_(TedCruz).jpg", answers: [
             {answerId: 0, answerText: "republican", correct: 1}, 
@@ -53,7 +53,6 @@ const testingAnswer2 = {
 
 describe('Basic Multiple Choice Quiz Functionality', () => {
     var response_id
-    var photo_id
     it('should succsesfully create a quiz', (done) => {
         axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
             expect(res.status).to.equal(201)
@@ -86,7 +85,6 @@ describe('Basic Multiple Choice Quiz Functionality', () => {
             expect(res.data.data.question_text).to.equal(testingQuiz.questions[1].text)
             expect(res.data.data.question_type).to.equal(testingQuiz.questions[1].question_type)
             expect(res.data.data.question_photo_id).to.equal(testingQuiz.questions[1].photoId)
-            photo_id = res.data.data.question_photo_id
             expect(res.data.data.hidden_text).to.equal(testingQuiz.questions[1].hiddenText)
             _.forEach(res.data.data.answers, (answer, index) => {
                 const model_answer = testingQuiz.questions[1].answers[index]
@@ -96,17 +94,6 @@ describe('Basic Multiple Choice Quiz Functionality', () => {
                 expect(answer.correct).to.equal(model_answer.correct)
                 expect(answer.percentOfAnswer).to.be.a('number')
             })
-            done()
-        }).catch(err => {
-            done(err)
-        })
-    });
-    it('should successfully get retrieve photo urls', (done) => {
-        axios.get('http://localhost:3000/api/photo/'+testingQuiz.id + '/' + photo_id).then(res => {
-            expect(res.status).to.equal(200)
-            expect(res.data.success).to.be.true
-            base_url = "http://localhost:8000/photos/"
-            expect(res.data.data.url).to.equal(base_url + testingQuiz.photo_base_url + "/" + photo_id) 
             done()
         }).catch(err => {
             done(err)
