@@ -14,13 +14,13 @@ const testingQuiz = {
     name: "Republican or democrat house",
     
     questions: [
-        { id: 0, type: "multiple_choice", text: "republican or democrat?", hiddenText: "Ted Cruz", photoId: "Republican_(TedCruz).jpg", answers: [
-            {answerId: 0, answerText: "republican", correct: true}, 
-            {answerId: 1, answerText: "democratic", correct: false}
+        { id: 0, question_type: "multiple_choice", text: "republican or democrat?", hiddenText: "Ted Cruz", photoId: "Republican_(TedCruz).jpg", answers: [
+            {answerId: 0, answerText: "republican", correct: 1}, 
+            {answerId: 1, answerText: "democratic", correct: 0}
         ]},
-        { id: 1, type: "multiple_choice", text: "republican or democrat?", hiddenText: "Bernie Sanders", photoId: "Democrat_(BernieSanders).png", answers: [
-            {answerId: 0, answerText: "republican", correct: false}, 
-            {answerId: 1, answerText: "democratic", correct: true}
+        { id: 1, question_type: "multiple_choice", text: "republican or democrat?", hiddenText: "Bernie Sanders", photoId: "Democrat_(BernieSanders).png", answers: [
+            {answerId: 0, answerText: "republican", correct: 0}, 
+            {answerId: 1, answerText: "democratic", correct: 1}
         ]}
     ],
     instructions: "test instructions"
@@ -83,14 +83,14 @@ describe('Basic Multiple Choice Quiz Functionality', () => {
             expect(res.status).to.equal(200)
             expect(res.data.success).to.be.true
             expect(res.data.data.question_text).to.equal(testingQuiz.questions[1].text)
-            expect(res.data.data.question_type).to.equal(testingQuiz.questions[1].type)
+            expect(res.data.data.question_type).to.equal(testingQuiz.questions[1].question_type)
             expect(res.data.data.question_photo_id).to.equal(testingQuiz.questions[1].photoId)
             expect(res.data.data.hidden_text).to.equal(testingQuiz.questions[1].hiddenText)
             _.forEach(res.data.data.answers, (answer, index) => {
                 const model_answer = testingQuiz.questions[1].answers[index]
                 expect(answer.answerId).to.equal(model_answer.answerId)
                 expect(answer.answerText).to.equal(model_answer.answerText)
-                expect(answer.answerPhoto).to.be(null)
+                expect(answer.answerPhoto).to.be.an('undefined')
                 expect(answer.correct).to.equal(model_answer.correct)
                 expect(answer.percentOfAnswer).to.be.a('number')
             })

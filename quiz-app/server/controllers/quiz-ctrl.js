@@ -119,11 +119,13 @@ deleteQuizSchema = async (req, res) => {
 
 
 
+//correct is a 0 or 1 if question type is mutliple_choice or a zero indexed index corresponding to the correct order if it’s a ranking question
 /*
 {
     "question_text": string,
-    "question_photo_id": integer,
-    "answers" : [{answerId: Number, answerText: String, correct: Boolean, percentOfAnswer: Number}],
+    "question_photo_id": string,
+    "question_type": multiple_choice | ranking
+    "answers" : [{answerId: Number, answerPhoto: String, answerText: String, correct: Number, percentOfAnswer: Number}],
     "hidden_text": string
 }
 */
@@ -150,14 +152,15 @@ getQuestionById = async (req, res) => {
         return res.status(200).json({ success: true, data: {
             "question_text": question.text,
             "question_photo_id": question.photoId,
+            "question_type": question.question_type,
             "answers" : _.map(question.answers, (a) => {
                 return {
                     percentOfAnswer: 50,
                     answerId: a.answerId,
                     answerText: a.answerText,
+                    answerPhoto: a.answerPhoto,
                     correct: a.correct,
                 }
-            
             }),
             "hidden_text": question.hiddenText
         } })
@@ -180,13 +183,18 @@ getPhotoById = async (req, res) => {
 payload:
 {
     "quiz_id": integer,
-    "response_id": integer,
-    "answer_number": integer,
     "question_id": integer,
-    "area_selected":{
-        "x": integer,
-        "y": integer
+    "response_id": integer,
+    "answer": multiple_choice: {
+        "answer_number": integer,
+        "area_selected":{
+            "x": integer,
+            "y": integer
+        }
+    } | ranking: {
+        answer_order: [answer_ids]
     }
+
 }
 */
 sendAnswer = (req, res) => {
@@ -208,8 +216,7 @@ sendAnswer = (req, res) => {
         
         response.answers = _.concat(response.answers, {
             questionId: req.body.question_id,
-            answerId: req.body.answer_number,
-            coordinates: {x: req.body.area_selected.x, y: req.body.area_selected.y}
+            answer: req.body.answer,
         })
 
         response
@@ -261,9 +268,18 @@ getResults = async (req, res) => {
 
             total_correct = _.sumBy(response.answers, (response_answer) => {
                 quiz_question = _.find(quiz.questions, (quiz_question) => quiz_question.id == response_answer.questionId)
-                quiz_question_answer = _.find(quiz_question.answers, (quiz_question_answer) => quiz_question_answer.answerId == response_answer.answerId)
-                return quiz_question_answer.correct ? 1 : 0
+                switch (quiz_question.question_type){
+                    case 'multiple_choice':
+                        quiz_question_answer = _.find(quiz_question.answers, (quiz_question_answer) => quiz_question_answer.answerId == response_answer.answer.answer_number)
+                        return quiz_question_answer.correct
+                    case 'ranking':
+                        //TODO need to check answers
+                        return 0 
+                    default:
+                        return 0
+                }
             })
+            console.log(total_correct)
             total_wrong = quiz.questions.length - total_correct;
             req.params.response_id = null; 
             return res.status(200).json({ success: true, data: {

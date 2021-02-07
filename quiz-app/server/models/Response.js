@@ -6,8 +6,7 @@ const Response = new Schema(
         quizId: Number,
         answers: [{
             questionId: Number,
-            answerId: Number,
-            coordinates: {x: Number, y: Number}
+            answer: Object
         }]
     },
     { timestamps: true },
