@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api";
 import Loading from "../../components/Loading";
+import { AnswerTypes, MultipleChoiceAnswer } from "../Quiz";
 import CorrectAnswer from "./CorrectAnswer";
 
 interface Props {
 	// image source id
 	id: string;
 	interactable?: boolean;
-	setAskForCoords?: (askForCoords: boolean) => void;
-	sendAnswer?: (coords: Coordinates) => void;
-	is_correct: boolean | undefined;
+	onInteract?: (coordinates: Coordinates) => void;
+	is_correct?: boolean | undefined;
 	politician_name: string;
 }
 
@@ -19,7 +19,7 @@ export interface Coordinates {
 }
 
 // component to render an image and capture user's mouse coordinates
-function QuizImage(props: Props) {
+function MultipleChoiceImage(props: Props) {
 	const [imgSrc, setImgSrc] = useState<string | null>(null);
 	const [clicked, setClicked] = useState<boolean>(false);
 	const [coordinates, setCoordinates] = useState<Coordinates>({
@@ -62,10 +62,8 @@ function QuizImage(props: Props) {
 		setClicked(true);
 		setShowCorrectAnswer(true);
 		setTimeout(() => {
-			if (props.setAskForCoords == null || props.sendAnswer == null)
-				return;
-			props.setAskForCoords(false);
-			props.sendAnswer(coordinates);
+			if (props.onInteract == null) return;
+			props.onInteract(coordinates);
 			setClicked(false);
 		}, 2500);
 	};
@@ -75,8 +73,8 @@ function QuizImage(props: Props) {
 			<div className="question-image">
 				{props.interactable && (
 					<h2>
-						Before we reveal the answer, tap the part that made you
-						think that way.
+						Before we reveal the answer, tap the part that
+						made you think that way.
 					</h2>
 				)}
 				<img
@@ -88,8 +86,13 @@ function QuizImage(props: Props) {
 					x: {coordinates.x}, y: {coordinates.y}
 				</p>
 				<div
-					className={"circle " + (clicked ? "show" : "hide")}
-					style={{ top: coordinates.y, left: coordinates.x }}
+					className={
+						"circle " + (clicked ? "show" : "hide")
+					}
+					style={{
+						top: coordinates.y,
+						left: coordinates.x,
+					}}
 				/>
 			</div>
 			<div>
@@ -106,9 +109,9 @@ function QuizImage(props: Props) {
 	);
 }
 
-QuizImage.defaultProps = {
+MultipleChoiceImage.defaultProps = {
 	interactable: false,
 	setAskForData: null,
 };
 
-export default QuizImage;
+export default MultipleChoiceImage;

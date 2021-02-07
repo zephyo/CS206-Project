@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
 import CorrectAnswer from "./quiz/CorrectAnswer";
-import QuizImage, { Coordinates } from "./quiz/QuizImage";
+import MultipleChoiceImage, {
+	Coordinates,
+} from "./quiz/MultipleChoiceImage";
 import QuizEnd from "./quiz/QuizEnd";
 import Loading from "../components/Loading";
+import MultipleChoice from "./quiz/MultipleChoice";
+import Ranking from "./quiz/Ranking";
+import { RouteComponentProps, useParams } from "react-router-dom";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 export interface QuizSchema {
 	response_id: number;
@@ -18,18 +25,46 @@ export interface QuizSchema {
 export interface Question {
 	question_text: string;
 	question_photo_id: string;
+	question_type: QuestionTypes;
 	answers: Array<Answer>;
 	hidden_text: string;
 }
 
-interface Answer {
+export enum QuestionTypes {
+	MULTIPLE_CHOICE = "multiple_choice",
+	RANKING = "ranking",
+}
+
+export interface Answer {
 	answerId: string;
+	answerPhoto: string;
 	answerText: string;
-	correct: boolean;
+	correct: number;
 	percentOfAnswer: number;
 }
 
-export default function Quiz() {
+export interface AnswerPayload {
+	quiz_id: number;
+	question_id: number;
+	response_id: number;
+	answer: AnswerTypes;
+}
+export type AnswerTypes = MultipleChoiceAnswer | RankingAnswer;
+
+export interface MultipleChoiceAnswer {
+	answer_number: string;
+	area_selected: Coordinates;
+}
+
+export interface RankingAnswer {
+	answer_order: Array<string>;
+}
+
+type QuizParams = { id: string };
+
+export default function Quiz({
+	match,
+}: RouteComponentProps<QuizParams>) {
 	const [quizSchema, setQuizSchema] = useState<QuizSchema | null>(
 		null
 	);
@@ -40,11 +75,9 @@ export default function Quiz() {
 	const [currAnswer, setCurrAnswer] = useState<Answer | null>(null);
 
 	const [score, setScore] = useState(0);
-	//   should we ask the user for data (e.g. top clue) about the question's image?
-	const [askForData, setAskForCoords] = useState(false);
 
 	const FetchSchemaData = async () => {
-		await api.getQuizSchema(0).then((results) => {
+		await api.getQuizSchema(match.params.id).then((results) => {
 			console.log("schema", results);
 			setQuizSchema(results.data.data);
 		});
@@ -82,22 +115,14 @@ export default function Quiz() {
 		return <Loading />;
 	}
 
-	const handleAnswerOptionClick = (answer: Answer) => {
-		setCurrAnswer(answer);
-		setAskForCoords(true);
-	};
-
-	const sendAnswer = async (coordinates: Coordinates) => {
-		await api.sendAnswer({
+	const sendAnswer = async (answer: AnswerTypes) => {
+		const a: AnswerPayload = {
 			quiz_id: quizSchema.quiz.quiz_id,
 			response_id: quizSchema.response_id,
-			answer_number: currAnswer?.answerId,
 			question_id: quizSchema.quiz.questions[currQuestionIndex],
-			area_selected: {
-				x: coordinates.x,
-				y: coordinates.y,
-			},
-		});
+			answer: answer,
+		};
+		await api.sendAnswer(a);
 
 		if (currAnswer?.correct) {
 			setScore(score + 1);
@@ -105,73 +130,64 @@ export default function Quiz() {
 		setCurrQuestionIndex(currQuestionIndex + 1);
 	};
 
-	if (askForData) {
-		return (
-			<QuizImage
-				id={currQuestion.question_photo_id}
-				setAskForCoords={setAskForCoords}
-				sendAnswer={sendAnswer}
-				interactable={true}
-				is_correct={currAnswer?.correct}
-				politician_name={currQuestion.hidden_text}
-			/>
-		);
+	let question = null;
+	if (currQuestionIndex < quizSchema.quiz.questions.length) {
+		switch (currQuestion.question_type) {
+			case QuestionTypes.MULTIPLE_CHOICE:
+				question = (
+					<MultipleChoice
+						{...{
+							currQuestionIndex,
+							quizSchema,
+							currQuestion,
+							currAnswer,
+							sendAnswer,
+						}}
+					/>
+				);
+				break;
+			case QuestionTypes.RANKING:
+				question = (
+					<Ranking
+						{...{
+							currQuestionIndex,
+							quizSchema,
+							currQuestion,
+							currAnswer,
+							sendAnswer,
+						}}
+					/>
+				);
+				break;
+			default:
+				question = <div>Question type unknown</div>;
+				break;
+		}
+	} else {
+		question = <div>That's all!</div>;
 	}
 
 	return (
-		<div className="quiz">
-			<h1>Quiz: {quizSchema.quiz.quiz_name}</h1>
-			{quizSchema.quiz.quiz_instructions ? (
-				<p className="subtitle">
-					{quizSchema.quiz.quiz_instructions}
-				</p>
-			) : null}
-			{currQuestionIndex < quizSchema.quiz.questions.length ? (
-				<>
-					<div className="question-section">
-						<div className="question-count">
-							<span>{currQuestionIndex + 1}</span>/
-							{quizSchema.quiz.questions.length}
-						</div>
-						<div className="question-text">
-							{currQuestion.question_text}
-						</div>
-					</div>
-					<QuizImage
-						id={currQuestion.question_photo_id}
-						is_correct={currAnswer?.correct}
-						politician_name={currQuestion.hidden_text}
-					/>
-					<div className="answer-section">
-						{currQuestion.answers.map(
-							(answerOption, i) => (
-								<button
-									key={i}
-									onClick={() =>
-										handleAnswerOptionClick(
-											answerOption
-										)
-									}
-								>
-									{answerOption.answerText}
-								</button>
-							)
-						)}
-					</div>
-				</>
-			) : (
-				<div>That's all!</div>
-			)}
-			<QuizEnd
-				quiz_id={quizSchema.quiz.quiz_id}
-				response_id={quizSchema.response_id}
-				length={quizSchema.quiz.questions.length}
-				score={score}
-				newspaper="New York Times"
-				percent_of_answer={
-					currQuestion.answers[0].percentOfAnswer
-				}
-			></QuizEnd>
-		</div>
+		<DndProvider backend={HTML5Backend}>
+			<div className="quiz">
+				<h1>Quiz: {quizSchema.quiz.quiz_name}</h1>
+				{quizSchema.quiz.quiz_instructions ? (
+					<p className="subtitle">
+						{quizSchema.quiz.quiz_instructions}
+					</p>
+				) : null}
+				{question}
+				<QuizEnd
+					quiz_id={quizSchema.quiz.quiz_id}
+					response_id={quizSchema.response_id}
+					length={quizSchema.quiz.questions.length}
+					score={score}
+					newspaper="New York Times"
+					percent_of_answer={
+						currQuestion.answers[0].percentOfAnswer
+					}
+				></QuizEnd>
+			</div>
+		</DndProvider>
 	);
 }
