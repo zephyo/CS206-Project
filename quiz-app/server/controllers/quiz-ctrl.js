@@ -278,6 +278,7 @@ getResults = async (req, res) => {
                         index = 0
                         return _.sumBy(response_answer.answer.answer_order, (answerId) => {
                             num_questions += 1
+                            //count each answer out of place as a wrong answer 
                             quiz_question_answer = _.find(quiz_question.answers, (quiz_question_answer) => quiz_question_answer.answerId == answerId)
                             toReturn = quiz_question_answer.correct == index ? 1 : 0
                             index += 1
@@ -287,8 +288,6 @@ getResults = async (req, res) => {
                         return 0
                 }
             })
-            console.log(num_questions)
-            console.log(total_correct)
             total_wrong = num_questions - total_correct;
             req.params.response_id = null; 
             return res.status(200).json({ success: true, data: {
