@@ -5,6 +5,7 @@ import { AnswerTypes, MultipleChoiceAnswer } from "../Quiz";
 import CorrectAnswer from "./CorrectAnswer";
 
 interface Props {
+	quiz_id: number;
 	// image source id
 	id: string;
 	interactable?: boolean;
@@ -29,11 +30,13 @@ function MultipleChoiceImage(props: Props) {
 	const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
 
 	const FetchData = async () => {
-		await api.getPhotoById(props.id).then((results) => {
-			console.log("img ID in quizimage: ", props.id);
-			console.log("img", results);
-			setImgSrc(results.data.data.url);
-		});
+		await api
+			.getPhotoById(props.quiz_id, props.id)
+			.then((results) => {
+				console.log("img ID in quizimage: ", props.id);
+				console.log("img", results);
+				setImgSrc(results.data.data.url);
+			});
 	};
 
 	// on mount, fetch data
