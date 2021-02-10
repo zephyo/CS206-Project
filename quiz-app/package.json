@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "server": "nodemon server/index.js",
+    "server": "concurrently \"nodemon server/index.js\" \" yarn --cwd server/ run swagger-autogen\"",
     "client": "yarn --cwd client/ start",
     "database": "brew services start mongodb-community",
     "dev": "concurrently \"yarn run database\" \"yarn run server\" \"yarn run client\"",
