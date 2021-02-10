@@ -71,10 +71,13 @@ newQuizSchema = async (req, res) => {
         in: 'body',
         type: "object",
         schema: {
-            "quiz_id": 1,
-            "questions": [0, 1, 2],
-            "quiz_name": "State COVID Line Up",
-            "quiz_instructions": "Do the thing" 
+            "quiz": {
+                "quiz_id": 1,
+                "questions": [0, 1, 2],
+                "quiz_name": "State COVID Line Up",
+                "quiz_instructions": "Do the thing" 
+            },
+            "response_id": 4
         }
     } */
 
@@ -230,12 +233,15 @@ sendAnswer = (req, res) => {
         schema: {
             "quiz_id": 3,
             "response_id": 2,
-            "answer_number": 1,
             "question_id": 0,
-            "area_selected":{
-                "x": 6,
-                "y": 7
+            "answer": {
+                "answer_number": 1,
+                "area_selected":{
+                    "x": 6,
+                    "y": 7
+                }
             }
+           
         }
     } */
 
