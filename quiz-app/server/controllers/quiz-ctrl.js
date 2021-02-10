@@ -58,7 +58,25 @@ getQuizSchema = async (req, res) => {
     }).catch(err => console.log(err))
 }
 
+// quiz: {
+//     "quiz_id": integer
+//     "questions": [integer (of questionIDs)],
+//     "quiz_name": string,
+//     "quiz_instructions": string
+// },
+// response_id: integer
+
 newQuizSchema = async (req, res) => {
+    /* #swagger.parameters['quiz'] = {
+        in: 'body',
+        type: "object",
+        schema: {
+            "quiz_id": 1,
+            "questions": [0, 1, 2],
+            "quiz_name": "State COVID Line Up",
+            "quiz_instructions": "Do the thing" 
+        }
+    } */
 
     const body = req.body
 
@@ -186,6 +204,22 @@ payload:
 }
 */
 sendAnswer = (req, res) => {
+
+    /* #swagger.parameters['body'] = {
+        in: 'body',
+        type: "object",
+        schema: {
+            "quiz_id": 3,
+            "response_id": 2,
+            "answer_number": 1,
+            "question_id": 0,
+            "area_selected":{
+                "x": 6,
+                "y": 7
+            }
+        }
+    } */
+
     const body = req.body
     if (!body) {
         return res.status(400).json({
