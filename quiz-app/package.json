@@ -3,6 +3,7 @@
     "server": "concurrently \"nodemon server/index.js\" \" yarn --cwd server/ run swagger-autogen\"",
     "client": "yarn --cwd client/ start",
     "database": "brew services start mongodb-community",
+    "predev": "concurrently \"yarn\" \"yarn --cwd server\" \"yarn --cwd client\"",
     "dev": "concurrently \"yarn run database\" \"sleepms 10000 && yarn run server\" \"yarn run client\"",
     "stopdb": "brew services stop mongodb-community",
     "test": "yarn --cwd server/ run test",
