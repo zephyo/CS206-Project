@@ -28,7 +28,7 @@ export const getQuestionById = (quiz_id, question_id) => api.get(`/question/${qu
     "hidden_text": string
 }
 */
-export const getPhotoById = (quiz_id, photo_id) => api.get(`/photo/${quiz_id}/${id}`)
+export const getPhotoById = (quiz_id, photo_id) => api.get(`/photo/${quiz_id}/${photo_id}`)
 /*
 {
     "url": url
