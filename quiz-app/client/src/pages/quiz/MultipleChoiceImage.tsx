@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import api from "../../api";
 import Loading from "../../components/Loading";
-import { AnswerTypes, MultipleChoiceAnswer } from "../Quiz";
 import CorrectAnswer from "./CorrectAnswer";
+import QuizImage from "./QuizImage";
 
 interface Props {
 	quiz_id: number;
@@ -21,33 +21,12 @@ export interface Coordinates {
 
 // component to render an image and capture user's mouse coordinates
 function MultipleChoiceImage(props: Props) {
-	const [imgSrc, setImgSrc] = useState<string | null>(null);
 	const [clicked, setClicked] = useState<boolean>(false);
 	const [coordinates, setCoordinates] = useState<Coordinates>({
 		x: 0,
 		y: 0,
 	});
 	const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
-
-	const FetchData = async () => {
-		await api
-			.getPhotoById(props.quiz_id, props.id)
-			.then((results) => {
-				console.log("img ID in quizimage: ", props.id);
-				console.log("img", results);
-				setImgSrc(results.data.data.url);
-			});
-	};
-
-	// on mount, fetch data
-	useEffect(() => {
-		console.log("new img id", props.id);
-		FetchData();
-	}, [props.id]);
-
-	if (imgSrc == null) {
-		return <Loading />;
-	}
 
 	const onMouseMove = (e: any) => {
 		if (clicked == true) return;
@@ -57,7 +36,7 @@ function MultipleChoiceImage(props: Props) {
 		});
 	};
 
-	const onClick = () => {
+	const onClick = (e: any) => {
 		if (props.interactable == false) return;
 		// TODO: send the coordinates somewhere
 
@@ -80,8 +59,9 @@ function MultipleChoiceImage(props: Props) {
 						made you think that way.
 					</h2>
 				)}
-				<img
-					src={imgSrc}
+				<QuizImage
+					quiz_id={props.quiz_id}
+					id={props.id}
 					onMouseMove={onMouseMove}
 					onClick={onClick}
 				/>

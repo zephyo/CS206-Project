@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
-import CorrectAnswer from "./quiz/CorrectAnswer";
 import MultipleChoiceImage, {
 	Coordinates,
 } from "./quiz/MultipleChoiceImage";
@@ -9,8 +8,6 @@ import Loading from "../components/Loading";
 import MultipleChoice from "./quiz/MultipleChoice";
 import Ranking from "./quiz/Ranking";
 import { RouteComponentProps, useParams } from "react-router-dom";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
 
 export interface QuizSchema {
 	response_id: number;
@@ -168,26 +165,24 @@ export default function Quiz({
 	}
 
 	return (
-		<DndProvider backend={HTML5Backend}>
-			<div className="quiz">
-				<h1>Quiz: {quizSchema.quiz.quiz_name}</h1>
-				{quizSchema.quiz.quiz_instructions ? (
-					<p className="subtitle">
-						{quizSchema.quiz.quiz_instructions}
-					</p>
-				) : null}
-				{question}
-				<QuizEnd
-					quiz_id={quizSchema.quiz.quiz_id}
-					response_id={quizSchema.response_id}
-					length={quizSchema.quiz.questions.length}
-					score={score}
-					newspaper="New York Times"
-					percent_of_answer={
-						currQuestion.answers[0].percentOfAnswer
-					}
-				></QuizEnd>
-			</div>
-		</DndProvider>
+		<div className="quiz">
+			<h1>Quiz: {quizSchema.quiz.quiz_name}</h1>
+			{quizSchema.quiz.quiz_instructions ? (
+				<p className="subtitle">
+					{quizSchema.quiz.quiz_instructions}
+				</p>
+			) : null}
+			{question}
+			<QuizEnd
+				quiz_id={quizSchema.quiz.quiz_id}
+				response_id={quizSchema.response_id}
+				length={quizSchema.quiz.questions.length}
+				score={score}
+				newspaper="New York Times"
+				percent_of_answer={
+					currQuestion.answers[0].percentOfAnswer
+				}
+			></QuizEnd>
+		</div>
 	);
 }

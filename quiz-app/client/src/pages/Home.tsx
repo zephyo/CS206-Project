@@ -8,7 +8,7 @@ export default function Home() {
 			<p>Create, edit, and test out your own quizzes.</p>
 			<br />
 			<div className="special-btn">
-				<Link to="/quiz/1234" className="size16">
+				<Link to="/quiz/0" className="size16">
 					TRY A DEMO
 				</Link>
 			</div>
