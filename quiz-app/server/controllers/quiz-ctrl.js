@@ -3,10 +3,13 @@ const Quiz = require('../models/Quiz')
 const Response = require('../models/Response')
 
 getPhoto = async (req, res, quizId, photoId) => {
+    console.log(quizId, photoId)
     let resp = await req.uest({
-        method: 'GET',
-        url: '/api/photo/' + quizId + '/' +  photoId
-    })
+        method: 'POST',
+        url: '/api/photo/' + quizId,
+        body: {photoId}
+    }).catch((err) => console.log(err))
+    console.log(resp.body.data.url)
     return resp.body.data.url
 }
 
@@ -210,7 +213,7 @@ getPhotoById = async (req, res) => {
         }
 
         return res.status(200).json({ success: true, data: {
-            "url": req.protocol+"://"+req.hostname+":8000/photos/" + quiz.photo_base_url + "/" + req.params.id,
+            "url": req.protocol+"://"+req.hostname+":8000/photos/" + quiz.photo_base_url + "/" + req.body.photoId,
         } })
     }).catch(err => console.log(err))
 }
