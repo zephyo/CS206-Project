@@ -5,7 +5,6 @@ import CorrectAnswer from "./CorrectAnswer";
 import QuizImage from "./QuizImage";
 
 interface Props {
-	quiz_id: number;
 	// image source id
 	id: string;
 	interactable?: boolean;
@@ -60,8 +59,7 @@ function MultipleChoiceImage(props: Props) {
 					</h2>
 				)}
 				<QuizImage
-					quiz_id={props.quiz_id}
-					id={props.id}
+					url={props.id}
 					onMouseMove={onMouseMove}
 					onClick={onClick}
 				/>

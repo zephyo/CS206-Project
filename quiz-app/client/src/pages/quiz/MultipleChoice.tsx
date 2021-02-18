@@ -25,7 +25,6 @@ export default function MultipleChoice(props: {
 	if (selectedAnswer) {
 		return (
 			<MultipleChoiceImage
-				quiz_id={quizSchema.quiz.quiz_id}
 				id={currQuestion.question_photo_id}
 				interactable={true}
 				onInteract={(coord: Coordinates) => {
@@ -49,7 +48,6 @@ export default function MultipleChoice(props: {
 				currQuestion={currQuestion}
 			/>
 			<MultipleChoiceImage
-				quiz_id={quizSchema.quiz.quiz_id}
 				id={currQuestion.question_photo_id}
 				politician_name={currQuestion.hidden_text}
 			/>
