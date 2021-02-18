@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AnswerTypes, Question, QuizSchema } from "../Quiz";
+import { Answer, AnswerTypes, Question, QuizSchema } from "../Quiz";
 import QuestionHeader from "./QuestionHeader";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSort } from "@fortawesome/free-solid-svg-icons";
@@ -8,7 +8,7 @@ import QuizImage from "./QuizImage";
 
 interface SortableAnswer {
 	id: string;
-	text: string;
+	answer: Answer;
 }
 
 export default function Ranking(props: {
@@ -26,7 +26,7 @@ export default function Ranking(props: {
 
 	const init: SortableAnswer[] = currQuestion.answers.map((a) => ({
 		id: a.answerId,
-		text: a.answerText,
+		answer: a,
 	}));
 	const [answers, setAnswers] = useState<SortableAnswer[]>(init);
 
@@ -55,11 +55,19 @@ export default function Ranking(props: {
 					>
 						{answers.map((item, index) => (
 							<div className="draggable" key={item.id}>
+								{item.answer.answerPhoto && (
+									<QuizImage
+										quiz_id={
+											quizSchema.quiz.quiz_id
+										}
+										id={item.answer.answerPhoto}
+									/>
+								)}
 								<FontAwesomeIcon
 									icon={faSort}
 									className="icon"
 								/>
-								{item.text}
+								{item.answer.answerText}
 								<span className="index">
 									{index + 1}
 								</span>
