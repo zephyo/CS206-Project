@@ -2,6 +2,14 @@ const _ = require('lodash')
 const Quiz = require('../models/Quiz')
 const Response = require('../models/Response')
 
+getPhoto = async (req, res, quizId, photoId) => {
+    let resp = await req.uest({
+        method: 'GET',
+        url: '/api/photo/' + quizId + '/' +  photoId
+    })
+    return resp.body.data.url
+}
+
 // quiz: {
 //     "quiz_id": integer
 //     "questions": [integer (of questionIDs)],
@@ -9,7 +17,6 @@ const Response = require('../models/Response')
 //     "quiz_instructions": string
 // },
 // response_id: integer
-
 getQuizSchema = async (req, res) => {
     await Quiz.findOne({ id: req.params.quiz_id }, (err, quiz) => {
         if (err) {
@@ -147,41 +154,42 @@ deleteQuizSchema = async (req, res) => {
 }
 */
 getQuestionById = async (req, res) => {
-    await Quiz.findOne({ id: req.params.quiz_id }, (err, quiz) => {
-        if (err) {
-            return res.status(400).json({ success: false, error: err })
-        }
+    let quiz = await Quiz.findOne({ id: req.params.quiz_id })
+    if (!quiz) {
+        return res
+            .status(404)
+            .json({ success: false, error: `Quiz not found` })
+    }
 
-        if (!quiz) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Quiz not found` })
-        }
+    question = _.find(quiz.questions, (q) => q.id == req.params.question_id)
 
-        question = _.find(quiz.questions, (q) => q.id == req.params.question_id)
+    if (!question) {
+        return res
+            .status(404)
+            .json({ success: false, error: `Question not found` })
+    }
 
-        if (!question) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Question not found` })
-        }
+    let answers = []
+    for (answerIndex in question.answers) {
+        const answer = question.answers[answerIndex]
+        const photoURL = answer.answerPhoto != undefined ? await getPhoto(req, res, req.params.quiz_id, answer.answerPhoto) : undefined
+        answers.push({
+            percentOfAnswer: 50,
+            answerId: answer.answerId,
+            answerText: answer.answerText,
+            answerPhoto: photoURL,
+            correct: answer.correct,
+        })
+    }
 
-        return res.status(200).json({ success: true, data: {
-            "question_text": question.text,
-            "question_photo_id": question.photoId,
-            "question_type": question.question_type,
-            "answers" : _.map(question.answers, (a) => {
-                return {
-                    percentOfAnswer: 50,
-                    answerId: a.answerId,
-                    answerText: a.answerText,
-                    answerPhoto: a.answerPhoto,
-                    correct: a.correct,
-                }
-            }),
-            "hidden_text": question.hiddenText
-        } })
-    }).catch(err => console.log(err))
+    return res.status(200).json({ success: true, data: {
+        "question_text": question.text,
+        "question_photo_id": await getPhoto(req, res, req.params.quiz_id, question.photoId),
+        "question_type": question.question_type,
+        "answers": answers,
+        "hidden_text": question.hiddenText
+    } })
+        
 }
 
 /*
@@ -202,7 +210,7 @@ getPhotoById = async (req, res) => {
         }
 
         return res.status(200).json({ success: true, data: {
-            "url": req.protocol+"://"+req.hostname+":8000/photos/" + quiz.photo_base_url + "/"+req.params.id,
+            "url": req.protocol+"://"+req.hostname+":8000/photos/" + quiz.photo_base_url + "/" + req.params.id,
         } })
     }).catch(err => console.log(err))
 }

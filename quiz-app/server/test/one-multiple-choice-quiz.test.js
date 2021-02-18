@@ -85,7 +85,7 @@ describe('Basic Multiple Choice Quiz Functionality', () => {
             expect(res.data.success).to.be.true
             expect(res.data.data.question_text).to.equal(testingQuiz.questions[1].text)
             expect(res.data.data.question_type).to.equal(testingQuiz.questions[1].question_type)
-            expect(res.data.data.question_photo_id).to.equal(testingQuiz.questions[1].photoId)
+            expect(res.data.data.question_photo_id).to.equal("http://localhost:8000/photos/" + testingQuiz.photo_base_url + "/" + testingQuiz.questions[1].photoId)
             photo_id = res.data.data.question_photo_id
             expect(res.data.data.hidden_text).to.equal(testingQuiz.questions[1].hiddenText)
             _.forEach(res.data.data.answers, (answer, index) => {
@@ -96,17 +96,6 @@ describe('Basic Multiple Choice Quiz Functionality', () => {
                 expect(answer.correct).to.equal(model_answer.correct)
                 expect(answer.percentOfAnswer).to.be.a('number')
             })
-            done()
-        }).catch(err => {
-            done(err)
-        })
-    });
-    it('should successfully get retrieve photo urls', (done) => {
-        axios.get('http://localhost:3000/api/photo/'+testingQuiz.id + '/' + photo_id).then(res => {
-            expect(res.status).to.equal(200)
-            expect(res.data.success).to.be.true
-            base_url = "http://localhost:8000/photos/"
-            expect(res.data.data.url).to.equal(base_url + testingQuiz.photo_base_url + "/" + photo_id) 
             done()
         }).catch(err => {
             done(err)

@@ -15,14 +15,14 @@ const testingQuiz = {
     photo_base_url: "stateflags",
     questions: [
         { id: 0, question_type: "ranking", text: "Rank the COVID Vaccine Priority in the state of Georgia", photoId: "Republican_(TedCruz).jpg", answers: [
-            {answerId: 0, photoText: "Republican_(TedCruz).jpg", answerText: "Healthcare worker", correct: 0}, 
-            {answerId: 1, photoText: "Republican_(TedCruz).jpg", answerText: "55 year old person", correct: 1},
-            {answerId: 2, photoText: "Republican_(TedCruz).jpg", answerText: "Teenager", correct: 2}
+            {answerId: 0, answerPhoto: "Republican_(TedCruz).jpg", answerText: "Healthcare worker", correct: 0}, 
+            {answerId: 1, answerPhoto: "Republican_(TedCruz).jpg", answerText: "55 year old person", correct: 1},
+            {answerId: 2, answerPhoto: "Republican_(TedCruz).jpg", answerText: "Teenager", correct: 2}
         ]},
         { id: 1, question_type: "ranking", text: "Rank the COVID Vaccine Priority in the state of Florida", photoId: "Democrat_(BernieSanders).png", answers: [
-            {answerId: 0, photoText: "Republican_(TedCruz).jpg", answerText: "Healthcare worker", correct: 1}, 
-            {answerId: 1, photoText: "Republican_(TedCruz).jpg", answerText: "55 year old person", correct: 0},
-            {answerId: 2, photoText: "Republican_(TedCruz).jpg", answerText: "Teenager", correct: 2}
+            {answerId: 0, answerPhoto: "Republican_(TedCruz).jpg", answerText: "Healthcare worker", correct: 1}, 
+            {answerId: 1, answerPhoto: "Republican_(TedCruz).jpg", answerText: "55 year old person", correct: 0},
+            {answerId: 2, answerPhoto: "Republican_(TedCruz).jpg", answerText: "Teenager", correct: 2}
         ]}
     ],
     instructions: "Drag and rank the quiz"
@@ -78,13 +78,13 @@ describe('Basic Ranking Quiz Functionality', () => {
             expect(res.data.success).to.be.true
             expect(res.data.data.question_text).to.equal(testingQuiz.questions[1].text)
             expect(res.data.data.question_type).to.equal(testingQuiz.questions[1].question_type)
-            expect(res.data.data.question_photo_id).to.equal(testingQuiz.questions[1].photoId)
+            expect(res.data.data.question_photo_id).to.equal("http://localhost:8000/photos/" + testingQuiz.photo_base_url + "/" + testingQuiz.questions[1].photoId)
             expect(res.data.data.hidden_text).to.be.an('undefined')
             _.forEach(res.data.data.answers, (answer, index) => {
                 const model_answer = testingQuiz.questions[1].answers[index]
                 expect(answer.answerId).to.equal(model_answer.answerId)
                 expect(answer.answerText).to.equal(model_answer.answerText)
-                expect(answer.answerPhoto).to.equal(model_answer.answerPhoto)
+                expect(answer.answerPhoto).to.equal("http://localhost:8000/photos/" + testingQuiz.photo_base_url + "/" + model_answer.answerPhoto)
                 expect(answer.correct).to.equal(model_answer.correct)
                 expect(answer.percentOfAnswer).to.be.a('number')
             })
