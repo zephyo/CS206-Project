@@ -3,13 +3,11 @@ const Quiz = require('../models/Quiz')
 const Response = require('../models/Response')
 
 getPhoto = async (req, res, quizId, photoId) => {
-    console.log(quizId, photoId)
     let resp = await req.uest({
         method: 'POST',
         url: '/api/photo/' + quizId,
         body: {photoId}
     }).catch((err) => console.log(err))
-    console.log(resp.body.data.url)
     return resp.body.data.url
 }
 
