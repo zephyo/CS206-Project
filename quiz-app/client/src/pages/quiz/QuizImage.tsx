@@ -9,6 +9,7 @@ interface Props {
 	id: string;
 	onMouseMove?: (e: any) => void;
 	onClick?: (e: any) => void;
+	className?: string;
 }
 
 export default function QuizImage(props: Props) {
@@ -38,6 +39,7 @@ export default function QuizImage(props: Props) {
 			src={imgSrc}
 			onMouseMove={props.onMouseMove}
 			onClick={props.onClick}
+			className={props.className}
 		/>
 	);
 }
