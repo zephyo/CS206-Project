@@ -43,7 +43,5 @@ jobs:
                 key: ${{ secrets.KEY }}
                 script: |
                   cd /home/ubuntu/CS206-Project/
-                  eval "$(ssh-agent -s)"
-                  ssh-add ~/.ssh/githubkey
-                  git pull origin main
+                  sudo git pull origin main
                   bash deploy.sh
