@@ -20,6 +20,8 @@ getPhoto = async (req, res, quizId, photoId) => {
 // response_id: integer
 getQuizSchema = async (req, res) => {
     await Quiz.findOne({ id: req.params.quiz_id }, (err, quiz) => {
+        console.log(err)
+        console.log(quiz)
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
