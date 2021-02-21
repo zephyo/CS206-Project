@@ -213,7 +213,7 @@ getPhotoById = async (req, res) => {
         }
 
         return res.status(200).json({ success: true, data: {
-            "url": req.protocol+"://"+req.hostname+":8000/photos/" + quiz.photo_base_url + "/" + req.body.photoId,
+            "url": req.protocol+"://3.141.154.122:8000/photos/" + quiz.photo_base_url + "/" + req.body.photoId,
         } })
     }).catch(err => console.log(err))
 }
