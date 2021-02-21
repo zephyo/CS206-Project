@@ -2,6 +2,15 @@ const _ = require('lodash')
 const Quiz = require('../models/Quiz')
 const Response = require('../models/Response')
 
+getPhoto = async (req, res, quizId, photoId) => {
+    let resp = await req.uest({
+        method: 'POST',
+        url: '/api/photo/' + quizId,
+        body: {photoId}
+    }).catch((err) => console.log(err))
+    return resp.body.data.url
+}
+
 // quiz: {
 //     "quiz_id": integer
 //     "questions": [integer (of questionIDs)],
@@ -9,7 +18,6 @@ const Response = require('../models/Response')
 //     "quiz_instructions": string
 // },
 // response_id: integer
-
 getQuizSchema = async (req, res) => {
     await Quiz.findOne({ id: req.params.quiz_id }, (err, quiz) => {
         if (err) {
@@ -71,10 +79,13 @@ newQuizSchema = async (req, res) => {
         in: 'body',
         type: "object",
         schema: {
-            "quiz_id": 1,
-            "questions": [0, 1, 2],
-            "quiz_name": "State COVID Line Up",
-            "quiz_instructions": "Do the thing" 
+            "quiz": {
+                "quiz_id": 1,
+                "questions": [0, 1, 2],
+                "quiz_name": "State COVID Line Up",
+                "quiz_instructions": "Do the thing" 
+            },
+            "response_id": 4
         }
     } */
 
@@ -133,15 +144,61 @@ deleteQuizSchema = async (req, res) => {
 
 
 
+//correct is a 0 or 1 if question type is mutliple_choice or a zero indexed index corresponding to the correct order if it’s a ranking question
 /*
 {
     "question_text": string,
-    "question_photo_id": integer,
-    "answers" : [{answerId: Number, answerText: String, correct: Boolean, percentOfAnswer: Number}],
+    "question_photo_id": string,
+    "question_type": multiple_choice | ranking
+    "answers" : [{answerId: Number, answerPhoto: String, answerText: String, correct: Number, percentOfAnswer: Number}],
     "hidden_text": string
 }
 */
 getQuestionById = async (req, res) => {
+    let quiz = await Quiz.findOne({ id: req.params.quiz_id })
+    if (!quiz) {
+        return res
+            .status(404)
+            .json({ success: false, error: `Quiz not found` })
+    }
+
+    question = _.find(quiz.questions, (q) => q.id == req.params.question_id)
+
+    if (!question) {
+        return res
+            .status(404)
+            .json({ success: false, error: `Question not found` })
+    }
+
+    let answers = []
+    for (answerIndex in question.answers) {
+        const answer = question.answers[answerIndex]
+        const photoURL = answer.answerPhoto != undefined ? await getPhoto(req, res, req.params.quiz_id, answer.answerPhoto) : undefined
+        answers.push({
+            percentOfAnswer: 50,
+            answerId: answer.answerId,
+            answerText: answer.answerText,
+            answerPhoto: photoURL,
+            correct: answer.correct,
+        })
+    }
+
+    return res.status(200).json({ success: true, data: {
+        "question_text": question.text,
+        "question_photo_id": await getPhoto(req, res, req.params.quiz_id, question.photoId),
+        "question_type": question.question_type,
+        "answers": answers,
+        "hidden_text": question.hiddenText
+    } })
+        
+}
+
+/*
+{
+    "url": url
+}
+*/
+getPhotoById = async (req, res) => {
     await Quiz.findOne({ id: req.params.quiz_id }, (err, quiz) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
@@ -153,54 +210,28 @@ getQuestionById = async (req, res) => {
                 .json({ success: false, error: `Quiz not found` })
         }
 
-        question = _.find(quiz.questions, (q) => q.id == req.params.question_id)
-
-        if (!question) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Question not found` })
-        }
-
         return res.status(200).json({ success: true, data: {
-            "question_text": question.text,
-            "question_photo_id": question.photoId,
-            "answers" : _.map(question.answers, (a) => {
-                return {
-                    percentOfAnswer: 50,
-                    answerId: a.answerId,
-                    answerText: a.answerText,
-                    correct: a.correct,
-                }
-            
-            }),
-            "hidden_text": question.hiddenText
+            "url": req.protocol+"://"+req.hostname+":8000/photos/" + quiz.photo_base_url + "/" + req.body.photoId,
         } })
     }).catch(err => console.log(err))
-}
-
-/*
-{
-    "url": url
-}
-*/
-getPhotoById = async (req, res) => {
-    return res.status(200).json({ success: true, data: {
-        "url": req.protocol+"://"+req.hostname+":8000/photos/politicianshouses/"+req.params.id,
-        "test": req.headers
-    } })
 }
 
 /*
 payload:
 {
     "quiz_id": integer,
-    "response_id": integer,
-    "answer_number": integer,
     "question_id": integer,
-    "area_selected":{
-        "x": integer,
-        "y": integer
+    "response_id": integer,
+    "answer": multiple_choice: {
+        "answer_number": integer,
+        "area_selected":{
+            "x": integer,
+            "y": integer
+        }
+    } | ranking: {
+        answer_order: [answer_ids]
     }
+
 }
 */
 sendAnswer = (req, res) => {
@@ -211,12 +242,15 @@ sendAnswer = (req, res) => {
         schema: {
             "quiz_id": 3,
             "response_id": 2,
-            "answer_number": 1,
             "question_id": 0,
-            "area_selected":{
-                "x": 6,
-                "y": 7
+            "answer": {
+                "answer_number": 1,
+                "area_selected":{
+                    "x": 6,
+                    "y": 7
+                }
             }
+           
         }
     } */
 
@@ -238,8 +272,7 @@ sendAnswer = (req, res) => {
         
         response.answers = _.concat(response.answers, {
             questionId: req.body.question_id,
-            answerId: req.body.answer_number,
-            coordinates: {x: req.body.area_selected.x, y: req.body.area_selected.y}
+            answer: req.body.answer,
         })
 
         response
@@ -288,13 +321,29 @@ getResults = async (req, res) => {
                     .status(404)
                     .json({ success: false, error: `Response not found` })
             }
-
+            num_questions = 0
             total_correct = _.sumBy(response.answers, (response_answer) => {
                 quiz_question = _.find(quiz.questions, (quiz_question) => quiz_question.id == response_answer.questionId)
-                quiz_question_answer = _.find(quiz_question.answers, (quiz_question_answer) => quiz_question_answer.answerId == response_answer.answerId)
-                return quiz_question_answer.correct ? 1 : 0
+                switch (quiz_question.question_type){
+                    case 'multiple_choice':
+                        num_questions += 1
+                        quiz_question_answer = _.find(quiz_question.answers, (quiz_question_answer) => quiz_question_answer.answerId == response_answer.answer.answer_number)
+                        return quiz_question_answer.correct
+                    case 'ranking':
+                        index = 0
+                        return _.sumBy(response_answer.answer.answer_order, (answerId) => {
+                            num_questions += 1
+                            //count each answer out of place as a wrong answer 
+                            quiz_question_answer = _.find(quiz_question.answers, (quiz_question_answer) => quiz_question_answer.answerId == answerId)
+                            toReturn = quiz_question_answer.correct == index ? 1 : 0
+                            index += 1
+                            return toReturn
+                        })
+                    default:
+                        return 0
+                }
             })
-            total_wrong = quiz.questions.length - total_correct;
+            total_wrong = num_questions - total_correct;
             req.params.response_id = null; 
             return res.status(200).json({ success: true, data: {
                 "numCorrect" : total_correct,

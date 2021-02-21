@@ -10,9 +10,9 @@ interface Props {
 function CorrectAnswer(props: Props) {
   let result = props.is_correct ? (
     <div className="correct-answer-text"
-    >Correct! This house belongs to {props.politician_name}.</div>
+    >Correct! This belongs to {props.politician_name}.</div>
   ) : <div className="correct-answer-text"
-  >Nope! This house belongs to {props.politician_name}.</div>
+  >Nope! This belongs to {props.politician_name}.</div>
   return result;
 }
 

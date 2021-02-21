@@ -166,12 +166,6 @@ button {
 		margin-top: 30px;
 	}
 
-	/* QUESTION/TIMER/LEFT SECTION */
-	.question-section {
-		width: 100%;
-		position: relative;
-	}
-
 	.question-count {
 		margin-bottom: 20px;
 	}
@@ -197,6 +191,32 @@ button {
 		width: 100%;
 		display: flex;
 		flex-direction: column;
+
+		.draggable {
+			margin-bottom: 15px;
+			min-height: 60px;
+			display: flex;
+			align-items: center;
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			cursor: move;
+			.answer-photo {
+				max-height: 50px;
+			}
+			.icon {
+				padding-left: 10px;
+				padding-right: 10px;
+				opacity: 0.5;
+			}
+			.index {
+				margin-left: auto;
+				width: 60px;
+			}
+		}
 	}
 }
 

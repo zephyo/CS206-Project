@@ -4,7 +4,7 @@ class Links extends Component {
     render() {
         return (
             <>
-                <Link to="/quiz/1234" >
+                <Link to="/quiz/1" >
                     Test Quiz
                 </Link>
                 <Link to="/quiz/create">

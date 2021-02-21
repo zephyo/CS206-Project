@@ -6,7 +6,6 @@ const api = axios.create({
 
 //our API
 export const getQuizSchema = (quiz_id) => api.get(`/schema/${quiz_id}`)
-//We keep track of responses based on your session. Need to call getQuizSchema each time a new quiz is started
 /*
 {
     "quiz": {
@@ -19,15 +18,17 @@ export const getQuizSchema = (quiz_id) => api.get(`/schema/${quiz_id}`)
 }
 */
 export const getQuestionById = (quiz_id, question_id) => api.get(`/question/${quiz_id}/${question_id}`)
+//correct is a 0 or 1 if question type is mutliple_choice or a zero indexed index corresponding to the correct order if it’s a ranking question
 /*
 {
     "question_text": string,
     "question_photo_id": string,
-    "answers" : [{answerId: Number, answerText: String, correct: Boolean, percentOfAnswer: Number}],
+    "question_type": multiple_choice | ranking
+    "answers" : [{answerId: Number, answerPhoto: String, answerText: String, correct: Number, percentOfAnswer: Number}],
     "hidden_text": string
 }
 */
-export const getPhotoById = id => api.get(`/photo/${id}`)
+export const getPhotoById = (quiz_id, photo_id) => api.get(`/photo/${quiz_id}/${photo_id}`)
 /*
 {
     "url": url
@@ -38,13 +39,18 @@ export const sendAnswer = payload => api.post(`/answer`, payload)
 payload:
 {
     "quiz_id": integer,
-    "response_id": integer,
-    "answer_number": integer,
     "question_id": integer,
-    "area_selected":{
-        "x": integer,
-        "y": integer
+    "response_id": integer,
+    "answer": multiple_choice: {
+        "answer_number": integer,
+        "area_selected":{
+            "x": integer,
+            "y": integer
+        }
+    } | ranking: {
+        answer_order: [answer_ids]
     }
+
 }
 */
 export const getEndResults = (quiz_id, response_id) => api.get(`/results/${quiz_id}/${response_id}`)
