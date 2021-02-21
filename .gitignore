@@ -26,3 +26,4 @@ yarn.lock
 quiz-app/server/swagger_output.json
 quiz-app/client/build
 quiz_deployment.pem
+quiz-app/server/uploads

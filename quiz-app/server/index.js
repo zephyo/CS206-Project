@@ -5,6 +5,7 @@ const uest = require('uest')
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('./swagger_output.json')
 
+
 const db = require('./db')
 const quizRouter = require('./routes/quiz-router')
 
@@ -15,6 +16,8 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 app.use(uest())
 app.use(bodyParser.json())
+
+
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
