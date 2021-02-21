@@ -19,7 +19,7 @@ jobs:
               run: npm install
             - name: building
               working-directory: quiz-app/client
-              run: npm build
+              run: CI=false npm run build
             - name: remove old build
               uses: appleboy/ssh-action@master
               with:
