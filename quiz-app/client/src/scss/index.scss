@@ -204,6 +204,9 @@ button {
 			-ms-user-select: none;
 			user-select: none;
 			cursor: move;
+			.answer-photo {
+				max-height: 50px;
+			}
 			.icon {
 				padding-left: 10px;
 				padding-right: 10px;

@@ -43,10 +43,7 @@ export default function Ranking(props: {
 				quizSchema={quizSchema}
 				currQuestion={currQuestion}
 			/>
-			<QuizImage
-				quiz_id={quizSchema.quiz.quiz_id}
-				id={currQuestion.question_photo_id}
-			/>
+			<QuizImage url={currQuestion.question_photo_id} />
 			<form className="answer-section">
 				<div>
 					<ReactSortable
@@ -57,10 +54,8 @@ export default function Ranking(props: {
 							<div className="draggable" key={item.id}>
 								{item.answer.answerPhoto && (
 									<QuizImage
-										quiz_id={
-											quizSchema.quiz.quiz_id
-										}
-										id={item.answer.answerPhoto}
+										className="answer-photo"
+										url={item.answer.answerPhoto}
 									/>
 								)}
 								<FontAwesomeIcon
