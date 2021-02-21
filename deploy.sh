@@ -1,8 +1,8 @@
 #!/bin/sh
 cd quiz-app
-sudo yarn install
+sudo yarn
 cd server
-sudo yarn install
+sudo yarn
 sudo yarn run swagger-autogen
 cd ..
 sudo systemctl restart nginx
