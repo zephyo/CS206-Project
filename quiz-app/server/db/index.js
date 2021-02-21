@@ -9,4 +9,6 @@ mongoose
 
 const db = mongoose.connection
 
+console.log(db)
+
 module.exports = db
