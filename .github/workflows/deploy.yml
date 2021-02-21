@@ -1,0 +1,49 @@
+name: Deploy To EC2 
+
+on:
+    push:
+        branches: [main]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest 
+        steps:
+            - uses: actions/checkout@v2
+            - name: Setup Node
+              uses: actions/setup-node@v1
+            - name: installing project dependencies
+              working-directory: quiz-app 
+              run: yarn install
+            - name: installing client dependencies
+              working-directory: quiz-app/client 
+              run: yarn install
+            - name: building
+              working-directory: quiz-app/client
+              run: yarn build
+            - name: remove old build
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.USERNAME }}
+                key: ${{ secrets.KEY }}
+                script: rm -rf /home/ubuntu/CS206-Project/quiz-app/client/build
+            - name: copy build via ssh
+              uses: horochx/deploy-via-scp@master
+              with:
+                local: quiz-app/client/build/
+                remote: /home/ubuntu/CS206-Project/quiz-app/client/build
+                host: ${{ secrets.HOST }}
+                user: ${{ secrets.USERNAME }}
+                key: ${{ secrets.KEY }}
+            - name: run setup
+              uses: appleboy/ssh-action@master
+              with:
+                host: ${{ secrets.HOST }}
+                username: ${{ secrets.USERNAME }}
+                key: ${{ secrets.KEY }}
+                script: |
+                  cd /home/ubuntu/CS206-Project/
+                  eval "$(ssh-agent -s)"
+                  ssh-add ~/.ssh/githubkey
+                  git pull origin main
+                  bash deploy.sh
