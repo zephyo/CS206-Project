@@ -1,6 +1,9 @@
 const _ = require('lodash')
 const Quiz = require('../models/Quiz')
 const Response = require('../models/Response')
+const Image = require('../models/Image')
+const fs = require('fs')
+const path = require('path')
 
 getPhoto = async (req, res, quizId, photoId) => {
     let resp = await req.uest({
@@ -20,8 +23,6 @@ getPhoto = async (req, res, quizId, photoId) => {
 // response_id: integer
 getQuizSchema = async (req, res) => {
     await Quiz.findOne({ id: req.params.quiz_id }, (err, quiz) => {
-        console.log(err)
-        console.log(quiz)
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
@@ -195,27 +196,94 @@ getQuestionById = async (req, res) => {
         
 }
 
+getPhotoURL = async (req, res) => {
+    await Image.findOne({ image_id: req.params.photo_id }, (err, image) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        if (!image) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Image not found` })
+        }
+
+        if (process.env.NODE_ENV === "development") {
+            return res.status(200).json({ success: true, data: {
+                "url": req.protocol+"://localhost:3000/api/photo/display/" + image.image_id,
+            } })
+        } else {
+            return res.status(200).json({ success: true, data: {
+                "url": req.protocol+"://3.141.154.122/api/photo/display/" + image.image_id,
+            } })
+        }
+        
+    }).catch(err => console.log(err))
+}
+
 /*
 {
     "url": url
 }
 */
 getPhotoById = async (req, res) => {
-    await Quiz.findOne({ id: req.params.quiz_id }, (err, quiz) => {
+
+    await Image.findOne({ image_id: req.params.photo_id }, (err, image) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
 
-        if (!quiz) {
+        if (!image) {
             return res
                 .status(404)
-                .json({ success: false, error: `Quiz not found` })
+                .json({ success: false, error: `Image not found` })
         }
 
-        return res.status(200).json({ success: true, data: {
-            "url": req.protocol+"://3.141.154.122:8000/photos/" + quiz.photo_base_url + "/" + req.body.photoId,
-        } })
+        var img = Buffer.from(image.img.data, 'base64');
+
+        res.status(200)
+
+        res.writeHead(200, {
+            'Content-Type': image.img.contentType,
+            'Content-Length': img.length
+        });
+        res.end(img); 
     }).catch(err => console.log(err))
+    
+}
+
+uploadPhoto = async (req, res) => {
+
+    const obj = {
+        image_id: req.file.filename,
+        img: {
+            data: fs.readFileSync(path.join(__dirname + '/../uploads/' + req.file.filename)),
+            contentType: 'image/png'
+        }
+    }
+    const img = new Image(obj)
+
+    if (!img) {
+        return res.status(400).json({ success: false, error: err })
+    }
+
+    img
+        .save()
+        .then(() => {
+            return res.status(201).json({
+                success: true,
+                image_id: img.image_id,
+                message: 'Image saved!',
+            })
+        })
+        .catch(error => {
+            return res.status(400).json({
+                error,
+                message: 'Image not saved!',
+            })
+        })
+
+
 }
 
 /*
@@ -363,5 +431,7 @@ module.exports = {
     sendAnswer,
     getResults,
     newQuizSchema,
-    deleteQuizSchema
+    deleteQuizSchema,
+    uploadPhoto,
+    getPhotoURL
 }
