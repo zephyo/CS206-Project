@@ -1,6 +1,8 @@
 const _ = require('lodash')
 const expect = require('chai').expect;
 const axios = require('axios')
+var FormData = require('form-data');
+var fs = require('fs');
 
 // create new quiz
 // get the quiz
@@ -8,23 +10,6 @@ const axios = require('axios')
 // we answer two questions
 // ensure results returns the correct # of answers
 // delete the quiz
-
-const testingQuiz = {
-    id: "5",
-    name: "Republican or democrat house",
-    photo_base_url: "politicianshouses",
-    questions: [
-        { id: 0, question_type: "multiple_choice", text: "republican or democrat?", hiddenText: "Ted Cruz", photoId: "Republican_(TedCruz).jpg", answers: [
-            {answerId: 0, answerText: "republican", correct: 1}, 
-            {answerId: 1, answerText: "democratic", correct: 0}
-        ]},
-        { id: 1, question_type: "multiple_choice", text: "republican or democrat?", hiddenText: "Bernie Sanders", photoId: "Democrat_(BernieSanders).png", answers: [
-            {answerId: 0, answerText: "republican", correct: 0}, 
-            {answerId: 1, answerText: "democratic", correct: 1}
-        ]}
-    ],
-    instructions: "test instructions"
-}
 
 const testingAnswer1 = {
     quiz_id: 5,
@@ -50,10 +35,52 @@ const testingAnswer2 = {
     }
 }
 
-
+let testingQuiz = {}
 describe('Basic Multiple Choice Quiz Functionality', () => {
+    var image_id = null
+    it('should succsesfully upload a photo', (done) => {
+        const form = new FormData();
+        const stream = fs.createReadStream(__dirname + '/beto.png');
+        
+        form.append('image', stream);
+        
+        const formHeaders = form.getHeaders();
+        
+        axios.post('http://localhost:3000/api/photo', form, {
+        headers: {
+            ...formHeaders,
+        },
+        })
+        .then(res => {
+            expect(res.status).to.equal(201)
+            expect(res.data.success).to.be.true
+            expect(res.data.image_id).to.be.a('string')
+            image_id = res.data.image_id
+            expect(res.data.message).to.equal('Image saved!')
+            testingQuiz = {
+                id: "5",
+                name: "Republican or democrat house",
+                photo_base_url: "politicianshouses",
+                questions: [
+                    { id: 0, question_type: "multiple_choice", text: "republican or democrat?", hiddenText: "Ted Cruz", photoId: image_id, answers: [
+                        {answerId: 0, answerText: "republican", correct: 1}, 
+                        {answerId: 1, answerText: "democratic", correct: 0}
+                    ]},
+                    { id: 1, question_type: "multiple_choice", text: "republican or democrat?", hiddenText: "Bernie Sanders", photoId: image_id, answers: [
+                        {answerId: 0, answerText: "republican", correct: 0}, 
+                        {answerId: 1, answerText: "democratic", correct: 1}
+                    ]}
+                ],
+                instructions: "test instructions"
+            }
+            done()
+        }).catch(err => {
+            done(err)
+        })
+    });
+
+
     var response_id
-    var photo_id
     it('should succsesfully create a quiz', (done) => {
         axios.post('http://localhost:3000/api/schema', testingQuiz).then(res => {
             expect(res.status).to.equal(201)
@@ -85,8 +112,7 @@ describe('Basic Multiple Choice Quiz Functionality', () => {
             expect(res.data.success).to.be.true
             expect(res.data.data.question_text).to.equal(testingQuiz.questions[1].text)
             expect(res.data.data.question_type).to.equal(testingQuiz.questions[1].question_type)
-            expect(res.data.data.question_photo_id).to.equal("http://localhost:8000/photos/" + testingQuiz.photo_base_url + "/" + testingQuiz.questions[1].photoId)
-            photo_id = res.data.data.question_photo_id
+            expect(res.data.data.question_photo_id).to.be.a("string")
             expect(res.data.data.hidden_text).to.equal(testingQuiz.questions[1].hiddenText)
             _.forEach(res.data.data.answers, (answer, index) => {
                 const model_answer = testingQuiz.questions[1].answers[index]

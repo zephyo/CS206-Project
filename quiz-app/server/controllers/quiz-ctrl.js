@@ -5,11 +5,10 @@ const Image = require('../models/Image')
 const fs = require('fs')
 const path = require('path')
 
-getPhoto = async (req, res, quizId, photoId) => {
+getPhoto = async (req, res, photoId) => {
     let resp = await req.uest({
-        method: 'POST',
-        url: '/api/photo/' + quizId,
-        body: {photoId}
+        method: 'GET',
+        url: '/api/photo/' + photoId
     }).catch((err) => console.log(err))
     return resp.body.data.url
 }
@@ -176,7 +175,7 @@ getQuestionById = async (req, res) => {
     let answers = []
     for (answerIndex in question.answers) {
         const answer = question.answers[answerIndex]
-        const photoURL = answer.answerPhoto != undefined ? await getPhoto(req, res, req.params.quiz_id, answer.answerPhoto) : undefined
+        const photoURL = answer.answerPhoto != undefined ? await getPhoto(req, res, answer.answerPhoto) : undefined
         answers.push({
             percentOfAnswer: 50,
             answerId: answer.answerId,
@@ -188,7 +187,7 @@ getQuestionById = async (req, res) => {
 
     return res.status(200).json({ success: true, data: {
         "question_text": question.text,
-        "question_photo_id": await getPhoto(req, res, req.params.quiz_id, question.photoId),
+        "question_photo_id": await getPhoto(req, res, question.photoId),
         "question_type": question.question_type,
         "answers": answers,
         "hidden_text": question.hiddenText
