@@ -13,13 +13,13 @@ jobs:
               uses: actions/setup-node@v1
             - name: installing project dependencies
               working-directory: quiz-app 
-              run: yarn install
+              run: npm install
             - name: installing client dependencies
               working-directory: quiz-app/client 
-              run: yarn install
+              run: npm install
             - name: building
               working-directory: quiz-app/client
-              run: yarn build
+              run: npm build
             - name: remove old build
               uses: appleboy/ssh-action@master
               with:
