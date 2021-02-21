@@ -1,6 +1,8 @@
 import axios from 'axios'
-
-const api = axios.create({
+ 
+const api = process.env.NODE_ENV == 'production' ? axios.create({
+    baseURL: 'http://localhost/api',
+}) : axios.create({
     baseURL: 'http://localhost:3000/api',
 })
 
