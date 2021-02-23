@@ -200,22 +200,22 @@ getPhotoURL = async (req, res) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
-        console.log(req.params.photo_id)
+
         if (!image) {
             return res
                 .status(404)
                 .json({ success: false, error: `Image not found` })
         }
 
-        // if (process.env.NODE_ENV === "development") {
-        //     return res.status(200).json({ success: true, data: {
-        //         "url": req.protocol+"://localhost:3000/api/photo/display/" + image.image_id,
-        //     } })
-        // } else {
+        if (process.env.NODE_ENV === "development") {
+            return res.status(200).json({ success: true, data: {
+                "url": req.protocol+"://localhost:3000/api/photo/display/" + image.image_id,
+            } })
+        } else {
             return res.status(200).json({ success: true, data: {
                 "url": req.protocol+"://3.141.154.122/api/photo/display/" + image.image_id,
             } })
-        // }
+        }
         
     }).catch(err => console.log(err))
 }
@@ -253,17 +253,13 @@ getPhotoById = async (req, res) => {
 
 uploadPhoto = async (req, res) => {
 
-    let obj = {
+    const obj = {
         image_id: req.file.filename,
         img: {
             data: fs.readFileSync(path.join(__dirname + '/../uploads/' + req.file.filename)),
             contentType: 'image/png'
         }
     }
-    if (req.params.image_name) {
-        obj.name = req.params.image_name
-    }
-
     const img = new Image(obj)
 
     if (!img) {
