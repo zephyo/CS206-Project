@@ -13,7 +13,6 @@ var fs = require('fs');
 // delete the quiz
 
 
-
 const testingAnswer1 = {
     quiz_id: 6,
     question_id: 0,
