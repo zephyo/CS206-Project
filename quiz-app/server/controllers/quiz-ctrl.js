@@ -253,14 +253,17 @@ getPhotoById = async (req, res) => {
 
 uploadPhoto = async (req, res) => {
 
-    const obj = {
+    let obj = {
         image_id: req.file.filename,
         img: {
             data: fs.readFileSync(path.join(__dirname + '/../uploads/' + req.file.filename)),
             contentType: 'image/png'
-        },
-        name: req.params.image_name
+        }
     }
+    if (req.params.image_name) {
+        obj.name = req.params.image_name
+    }
+
     const img = new Image(obj)
 
     if (!img) {
