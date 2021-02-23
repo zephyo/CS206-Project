@@ -207,15 +207,15 @@ getPhotoURL = async (req, res) => {
                 .json({ success: false, error: `Image not found` })
         }
 
-        // if (process.env.NODE_ENV === "development") {
-        //     return res.status(200).json({ success: true, data: {
-        //         "url": req.protocol+"://localhost:3000/api/photo/display/" + image.image_id,
-        //     } })
-        // } else {
+        if (process.env.NODE_ENV === "development") {
+            return res.status(200).json({ success: true, data: {
+                "url": req.protocol+"://localhost:3000/api/photo/display/" + image.image_id,
+            } })
+        } else {
             return res.status(200).json({ success: true, data: {
                 "url": req.protocol+"://3.141.154.122/api/photo/display/" + image.image_id,
             } })
-        // }
+        }
         
     }).catch(err => console.log(err))
 }
