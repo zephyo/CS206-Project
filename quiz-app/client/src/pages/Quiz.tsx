@@ -124,8 +124,9 @@ export default function Quiz({
 			question_id: quizSchema.quiz.questions[currQuestionIndex],
 			answer: answer,
 		};
+		console.log("send answer", a);
 		await api.sendAnswer(a);
-
+		console.log("done sending answer");
 		if (currAnswer?.correct) {
 			setScore(score + 1);
 		}
@@ -184,6 +185,7 @@ export default function Quiz({
 				length={quizSchema.quiz.questions.length}
 				score={score}
 				newspaper="New York Times"
+				currQuestionIndex={currQuestionIndex}
 				percent_of_answer={
 					currQuestion.answers[0].percentOfAnswer
 				}
