@@ -87,6 +87,11 @@ export default function Quiz({
 		)
 			return;
 
+		console.log(
+			"FetchQuestionData for",
+			quizSchema.quiz.quiz_name
+		);
+
 		await api
 			.getQuestionById(
 				quizSchema.quiz.quiz_id,
