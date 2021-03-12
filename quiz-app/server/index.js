@@ -22,14 +22,6 @@ serverApp.use(bodyParser.json())
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
-const frontEndApp = express()
-frontEndApp.use(express.static(path.join(__dirname, '/../client/build')))
-
-frontEndApp.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '/../client/build', 'index.html'))
-})
-frontEndApp.listen(8000)
-
 serverApp.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 serverApp.use('/api', quizRouter)
 
