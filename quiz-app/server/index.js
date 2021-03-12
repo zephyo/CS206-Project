@@ -1,5 +1,6 @@
 const express = require('express')
 const bodyParser = require('body-parser')
+const path = require('path')
 const cors = require('cors')
 const uest = require('uest')
 const swaggerUi = require('swagger-ui-express')
@@ -22,10 +23,10 @@ serverApp.use(bodyParser.json())
 db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
 const frontEndApp = express()
-frontEndApp.use(express.static(path.join(__dirname, 'build')))
+frontEndApp.use(express.static(path.join(__dirname, '/../client/build')))
 
 frontEndApp.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'))
+    res.sendFile(path.join(__dirname, '/../client/build', 'index.html'))
 })
 frontEndApp.listen(8000)
 
