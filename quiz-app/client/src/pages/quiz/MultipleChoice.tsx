@@ -33,6 +33,7 @@ export default function MultipleChoice(props: {
 						answer_number: selectedAnswer.answerId,
 						area_selected: coord,
 					});
+					onSelectAnswer(null);
 				}}
 				is_correct={selectedAnswer?.correct == 1}
 				politician_name={currQuestion.hidden_text}

@@ -30,7 +30,8 @@ export default function Ranking(props: {
 	}));
 	const [answers, setAnswers] = useState<SortableAnswer[]>(init);
 
-	const onSubmit = () => {
+	const onSubmit = (e: any) => {
+		e.preventDefault();
 		sendAnswer({
 			answer_order: answers.map((r) => r.id),
 		});
@@ -70,7 +71,7 @@ export default function Ranking(props: {
 						))}
 					</ReactSortable>
 				</div>
-				<button onSubmit={onSubmit}>Done</button>
+				<button onClick={onSubmit}>Done</button>
 			</form>
 		</>
 	);

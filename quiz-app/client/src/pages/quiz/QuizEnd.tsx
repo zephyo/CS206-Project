@@ -9,6 +9,7 @@ interface Props {
 	length: number;
 	newspaper: string;
 	percent_of_answer: number;
+	currQuestionIndex: number;
 }
 
 interface EndResult {
@@ -33,7 +34,7 @@ function QuizEnd(props: Props) {
 	// on mount, fetch data
 	useEffect(() => {
 		FetchData();
-	}, []);
+	}, [props.currQuestionIndex]);
 
 	if (endResults == null) {
 		return <Loading />;
@@ -41,15 +42,32 @@ function QuizEnd(props: Props) {
 
 	const numTotal = endResults.numWrong + endResults.numCorrect;
 
+	let statsText;
+	if (numTotal == 0) {
+		statsText = (
+			<div>
+				So far, {props.newspaper} readers have made {numTotal}{" "}
+				guesses.
+			</div>
+		);
+	} else {
+		statsText = (
+			<div>
+				So far, {props.newspaper} readers have made {numTotal}{" "}
+				guesses, correct{" "}
+				{(props.percent_of_answer / numTotal).toFixed(2)}% of
+				the time.
+			</div>
+		);
+	}
+
 	return (
 		<div className="score-section">
 			You guessed {props.score} out of {props.length} correct,
 			for a score of {(props.score * 100) / props.length}%.
 			<br />
 			<br />
-			So far, {props.newspaper} readers have made {numTotal}{" "}
-			guesses, correct {props.percent_of_answer / numTotal}% of
-			the time.
+			{statsText}
 			{/* Here's what most gave it away: //TODO */}
 		</div>
 	);

@@ -27,6 +27,10 @@ function MultipleChoiceImage(props: Props) {
 	});
 	const [showCorrectAnswer, setShowCorrectAnswer] = useState(false);
 
+	useEffect(() => {
+		setShowCorrectAnswer(false);
+	}, [props.id]);
+
 	const onMouseMove = (e: any) => {
 		if (clicked == true) return;
 		setCoordinates({
