@@ -22,6 +22,8 @@ export default function MultipleChoice(props: {
 		null
 	);
 
+	console.log("mount MultipleChoice.jsx");
+
 	if (selectedAnswer) {
 		return (
 			<MultipleChoiceImage
@@ -33,6 +35,7 @@ export default function MultipleChoice(props: {
 						answer_number: selectedAnswer.answerId,
 						area_selected: coord,
 					});
+					console.log("test, new changes");
 					onSelectAnswer(null);
 				}}
 				is_correct={selectedAnswer?.correct == 1}
